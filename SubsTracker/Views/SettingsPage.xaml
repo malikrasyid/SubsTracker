@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SubsTracker.Views.SettingsPage"
+             Title="Settings"
+             BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
+
+    <VerticalStackLayout Spacing="20" Padding="30">
+
+        <Frame Padding="20" CornerRadius="10">
+            <StackLayout>
+                <Label Text="Notifications" FontSize="18" FontAttributes="Bold" />
+                <Grid ColumnDefinitions="*, Auto" Margin="0,10,0,0">
+                    <Label Text="Enable Reminders" VerticalOptions="Center"/>
+                    <Switch IsToggled="True" Grid.Column="1"/>
+                </Grid>
+                <Label Text="Get notified 3 days before a subscription renews." 
+                       FontSize="12" TextColor="Gray" Margin="0,5,0,0"/>
+            </StackLayout>
+        </Frame>
+
+        <Frame Padding="20" CornerRadius="10">
+            <StackLayout>
+                <Label Text="Data Management" FontSize="18" FontAttributes="Bold" />
+                <Button Text="Delete All Data" 
+                        BackgroundColor="#FF453A" 
+                        TextColor="White"
+                        Margin="0,15,0,0"/>
+            </StackLayout>
+        </Frame>
+
+        <Label Text="App Version 1.0.0" 
+               HorizontalOptions="Center" 
+               TextColor="Gray" 
+               Margin="0,50,0,0"/>
+
+    </VerticalStackLayout>
+</ContentPage>

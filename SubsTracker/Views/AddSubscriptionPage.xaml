@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SubsTracker.ViewModels"
+             x:Class="SubsTracker.Views.AddSubscriptionPage"
+             Title="New Subscription"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30">
+
+            <Label Text="Add Details" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,20" />
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Service Name" TextColor="Gray"/>
+                <Entry Placeholder="e.g. Netflix, Spotify"
+                       Text="{Binding Name}"
+                       ClearButtonVisibility="WhileEditing" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Monthly Price" TextColor="Gray"/>
+                <Entry Placeholder="0.00"
+                       Text="{Binding Price}"
+                       Keyboard="Numeric"
+                       ClearButtonVisibility="WhileEditing" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="First Payment / Renewal Date" TextColor="Gray"/>
+                <DatePicker Date="{Binding ExpiryDate}"
+                            Format="D" />
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,30,0,0">
+                <Button Grid.Column="0" 
+                        Text="Cancel"
+                        Command="{Binding CancelCommand}"
+                        BackgroundColor="LightGray"
+                        TextColor="Black" />
+
+                <Button Grid.Column="1" 
+                        Text="Save"
+                        Command="{Binding SaveCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

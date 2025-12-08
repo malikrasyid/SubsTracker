@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SubsTracker.ViewModels"
+             xmlns:models="clr-namespace:SubsTracker.Models"
+             x:Class="SubsTracker.Views.DashboardPage"
+             Title="Dashboard">
+    <Grid>
+        <RefreshView Command="{Binding LoadSubscriptionsCommand}" 
+                     IsRefreshing="{Binding IsBusy}">
+
+            <CollectionView ItemsSource="{Binding Subscriptions}"
+                            SelectionMode="Single"
+                            SelectionChangedCommand="{Binding GoToDetailsCommand}"
+                            SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Subscription">
+                        <Frame Margin="10,5" Padding="15" CornerRadius="10" HasShadow="True">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                    <Label Text="{Binding ExpiryDate, StringFormat='Renews: {0:MMM dd}'}" 
+                                           TextColor="Gray" FontSize="12"/>
+                                </StackLayout>
+                                <Label Grid.Column="1" 
+                                       Text="{Binding Price, StringFormat='${0:F2}'}" 
+                                       FontSize="18" 
+                                       VerticalOptions="Center" 
+                                       TextColor="{StaticResource Primary}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                        <Label Text="No subscriptions yet!" HorizontalOptions="Center" />
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+            </CollectionView>
+        </RefreshView>
+
+        <Button Text="+"
+                Command="{Binding GoToAddSubscriptionCommand}"
+                BackgroundColor="{StaticResource Primary}"
+                TextColor="White"
+                CornerRadius="30"
+                WidthRequest="60"
+                HeightRequest="60"
+                FontSize="30"
+                Padding="0"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="20"
+                Shadow="{Shadow Brush=Black, Offset='2,2', Opacity=0.5}" />
+    </Grid>
+</ContentPage>
