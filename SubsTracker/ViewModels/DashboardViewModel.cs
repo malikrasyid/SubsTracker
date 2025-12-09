@@ -57,7 +57,7 @@ namespace SubsTracker.ViewModels
         private void CalculateTotal()
         {
             // Simple LINQ sum
-            TotalMonthlyCost = Subscriptions.Sum(s => s.Price);
+            TotalMonthlyCost = Subscriptions.Sum(s => s.Cost);
         }
 
         [RelayCommand]

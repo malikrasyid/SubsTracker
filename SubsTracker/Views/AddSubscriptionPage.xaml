@@ -17,23 +17,46 @@
 
             <VerticalStackLayout Spacing="5">
                 <Label Text="Service Name" TextColor="Gray"/>
-                <Entry Placeholder="e.g. Netflix, Spotify"
-                       Text="{Binding Name}"
-                       ClearButtonVisibility="WhileEditing" />
+                <Entry Text="{Binding Name}" Placeholder="Netflix" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="5">
-                <Label Text="Monthly Price" TextColor="Gray"/>
-                <Entry Placeholder="0.00"
-                       Text="{Binding Price}"
-                       Keyboard="Numeric"
-                       ClearButtonVisibility="WhileEditing" />
+                <Label Text="Cost" TextColor="Gray"/>
+                <Entry Text="{Binding Cost}" Keyboard="Numeric" Placeholder="0.00" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="5">
-                <Label Text="First Payment / Renewal Date" TextColor="Gray"/>
-                <DatePicker Date="{Binding ExpiryDate}"
-                            Format="D" />
+                <Label Text="Billing Cycle" TextColor="Gray"/>
+                <Picker ItemsSource="{Binding BillingCycles}" 
+            SelectedItem="{Binding SelectedCycle}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Category" TextColor="Gray"/>
+
+                <Picker ItemsSource="{Binding CommonCategories}" 
+            SelectedItem="{Binding SelectedCategory}" />
+
+                <Entry Placeholder="Type custom category..." 
+           Text="{Binding CustomCategory}">
+                    <Entry.Triggers>
+                        <DataTrigger TargetType="Entry" 
+                         Binding="{Binding SelectedCategory}" 
+                         Value="Other">
+                            <Setter Property="IsVisible" Value="True" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Entry" 
+                         Binding="{Binding SelectedCategory}" 
+                         Value="Streaming">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </Entry.Triggers>
+                </Entry>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Next Payment" TextColor="Gray"/>
+                <DatePicker Date="{Binding NextPaymentDate}" Format="D" />
             </VerticalStackLayout>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,30,0,0">

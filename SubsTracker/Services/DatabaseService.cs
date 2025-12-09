@@ -30,11 +30,34 @@ namespace SubsTracker.Services
                 // If empty, add dummy data
                 var dummyData = new List<Subscription>
                 {
-                    new Subscription { Name = "Netflix", Price = 15.99m, ExpiryDate = DateTime.Now.AddDays(5) },
-                    new Subscription { Name = "Spotify", Price = 9.99m, ExpiryDate = DateTime.Now.AddDays(12) },
-                    new Subscription { Name = "Adobe Cloud", Price = 52.99m, ExpiryDate = DateTime.Now.AddDays(20) },
-                    new Subscription { Name = "Xbox GamePass", Price = 14.99m, ExpiryDate = DateTime.Now.AddDays(2) },
-                    new Subscription { Name = "Gym Membership", Price = 40.00m, ExpiryDate = DateTime.Now.AddDays(25) }
+                    new Subscription {
+                        Name = "Netflix",
+                        Cost = 15.99m,
+                        NextPaymentDate = DateTime.Now.AddDays(5),
+                        Category = "Streaming",
+                        BillingCycle = BillingCycle.Monthly
+                    },
+                    new Subscription {
+                        Name = "Spotify",
+                        Cost = 9.99m,
+                        NextPaymentDate = DateTime.Now.AddDays(12),
+                        Category = "Music",
+                        BillingCycle = BillingCycle.Monthly
+                    },
+                    new Subscription {
+                        Name = "Xbox GamePass",
+                        Cost = 14.99m,
+                        NextPaymentDate = DateTime.Now.AddDays(2),
+                        Category = "Gaming",
+                        BillingCycle = BillingCycle.Monthly
+                    },
+                    new Subscription {
+                        Name = "Gym",
+                        Cost = 40.00m,
+                        NextPaymentDate = DateTime.Now.AddDays(25),
+                        Category = "Gym",
+                        BillingCycle = BillingCycle.Monthly
+                    }
                 };
 
                 await _database.InsertAllAsync(dummyData);

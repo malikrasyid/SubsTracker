@@ -4,38 +4,71 @@
              xmlns:vm="clr-namespace:SubsTracker.ViewModels"
              xmlns:models="clr-namespace:SubsTracker.Models"
              x:Class="SubsTracker.Views.DashboardPage"
-             Title="Dashboard">
+             Title="Dashboard"
+             BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
+
     <Grid>
         <RefreshView Command="{Binding LoadSubscriptionsCommand}" 
                      IsRefreshing="{Binding IsBusy}">
 
             <CollectionView ItemsSource="{Binding Subscriptions}"
-                            SelectionMode="Single"
-                            SelectionChangedCommand="{Binding GoToDetailsCommand}"
-                            SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
+                            SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="1" VerticalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Subscription">
-                        <Frame Margin="10,5" Padding="15" CornerRadius="10" HasShadow="True">
-                            <Grid ColumnDefinitions="*, Auto">
-                                <StackLayout Grid.Column="0">
-                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                                    <Label Text="{Binding ExpiryDate, StringFormat='Renews: {0:MMM dd}'}" 
-                                           TextColor="Gray" FontSize="12"/>
-                                </StackLayout>
-                                <Label Grid.Column="1" 
-                                       Text="{Binding Price, StringFormat='${0:F2}'}" 
-                                       FontSize="18" 
-                                       VerticalOptions="Center" 
-                                       TextColor="{StaticResource Primary}" />
+
+                        <Frame Margin="10,5" Padding="15" CornerRadius="15" HasShadow="True" BorderColor="Transparent">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=GoToDetailsCommand}"
+                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto">
+
+                                <Frame Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                       HeightRequest="50" WidthRequest="50"
+                       CornerRadius="25"
+                       BackgroundColor="{Binding HexColor}"
+                       Padding="0"
+                       HasShadow="False"
+                       Margin="0,0,15,0">
+                                    <Label Text="{Binding Initial}"
+                           TextColor="White"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                                </Frame>
+
+                                <Label Grid.Row="0" Grid.Column="1" 
+                       Text="{Binding Name}" 
+                       FontSize="18" 
+                       FontAttributes="Bold" />
+
+                                <Label Grid.Row="1" Grid.Column="1" 
+                       Text="{Binding NextPaymentDate, StringFormat='Due: {0:MMM dd}'}" 
+                       TextColor="Gray" FontSize="12"/>
+
+                                <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" 
+                       Text="{Binding Cost, StringFormat='${0:F2}'}" 
+                       FontSize="18" 
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" 
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}" />
                             </Grid>
                         </Frame>
+
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
 
                 <CollectionView.EmptyView>
-                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                        <Label Text="No subscriptions yet!" HorizontalOptions="Center" />
+                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                        <Label Text="No subscriptions yet." TextColor="Gray" HorizontalOptions="Center"/>
+                        <Label Text="Tap + to add one!" TextColor="Gray" HorizontalOptions="Center"/>
                     </StackLayout>
                 </CollectionView.EmptyView>
 

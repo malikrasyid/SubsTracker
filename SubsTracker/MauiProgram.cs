@@ -2,6 +2,7 @@
 using SubsTracker.Services;
 using Plugin.LocalNotification;
 using SubsTracker.ViewModels;
+using Microcharts.Maui;
 
 namespace SubsTracker
 {
@@ -12,6 +13,7 @@ namespace SubsTracker
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMicrocharts()
                 //.UseLocalNotification()
                 .ConfigureFonts(fonts =>
                 {

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SubsTracker.ViewModels"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="SubsTracker.Views.InsightsPage"
              Title="Insights"
              BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
@@ -9,40 +10,56 @@
     <ScrollView>
         <VerticalStackLayout Spacing="15" Padding="20">
 
-            <Frame Padding="20" CornerRadius="15" HasShadow="True" BackgroundColor="{StaticResource Primary}">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+
+                <Frame Grid.Column="0" Padding="15" CornerRadius="15" HasShadow="True" BackgroundColor="{StaticResource Primary}">
+                    <StackLayout>
+                        <Label Text="Monthly" TextColor="#CCFFFFFF" FontSize="12"/>
+                        <Label Text="{Binding TotalMonthlyCost, StringFormat='${0:F0}'}" 
+                               TextColor="White" 
+                               FontSize="28" 
+                               FontAttributes="Bold"/>
+                    </StackLayout>
+                </Frame>
+
+                <Frame Grid.Column="1" Padding="15" CornerRadius="15" HasShadow="True" BackgroundColor="White">
+                    <StackLayout>
+                        <Label Text="Yearly Est." TextColor="Gray" FontSize="12"/>
+                        <Label Text="{Binding EstimatedYearlyCost, StringFormat='${0:F0}'}" 
+                               TextColor="Black" 
+                               FontSize="28" 
+                               FontAttributes="Bold"/>
+                    </StackLayout>
+                </Frame>
+            </Grid>
+
+            <Frame Padding="10" CornerRadius="15" HasShadow="True" HeightRequest="300">
                 <StackLayout>
-                    <Label Text="Total Monthly" TextColor="#CCFFFFFF" FontSize="14"/>
-                    <Label Text="{Binding TotalMonthlyExpenses, StringFormat='${0:F2}'}" 
-                           TextColor="White" 
-                           FontSize="36" 
-                           FontAttributes="Bold"/>
+                    <Label Text="Spending by Category" FontAttributes="Bold" Margin="10,0,0,10"/>
+
+                    <micro:ChartView Chart="{Binding CategoryChart}" 
+                                     HeightRequest="250" />
                 </StackLayout>
             </Frame>
 
-            <Frame Padding="20" CornerRadius="15" HasShadow="True">
-                <StackLayout>
-                    <Label Text="Estimated Yearly Cost" TextColor="Gray" FontSize="14"/>
-                    <Label Text="{Binding EstimatedYearlyExpenses, StringFormat='${0:F2}'}" 
-                           TextColor="{AppThemeBinding Light=Black, Dark=White}" 
-                           FontSize="28" 
-                           FontAttributes="Bold"/>
-                    <Label Text="*Based on current active subscriptions" FontSize="10" TextColor="Gray" Margin="0,5,0,0"/>
-                </StackLayout>
+            <Frame Padding="20" CornerRadius="15" HasShadow="True" BackgroundColor="#E3F2FD" BorderColor="#2196F3">
+                <Grid ColumnDefinitions="50, *">
+                    <Label Grid.Column="0" Text="💡" FontSize="30" VerticalOptions="Center"/>
+
+                    <StackLayout Grid.Column="1">
+                        <Label Text="Smart Tip" TextColor="#1565C0" FontAttributes="Bold" FontSize="12"/>
+                        <Label Text="{Binding SmartAdvice}" 
+                               TextColor="#0D47A1" 
+                               FontSize="14"/>
+                    </StackLayout>
+                </Grid>
             </Frame>
 
-            <Frame Padding="20" CornerRadius="15" HasShadow="True">
-                <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto">
-                    <Label Grid.Row="0" Grid.ColumnSpan="2" Text="Most Expensive" TextColor="Gray" FontSize="14" Margin="0,0,0,10"/>
-
-                    <Label Grid.Row="1" Grid.Column="0" 
-                           Text="{Binding MostExpensiveName}" 
-                           FontSize="18" 
-                           FontAttributes="Bold"/>
-
-                    <Label Grid.Row="1" Grid.Column="1" 
-                           Text="{Binding MostExpensivePrice, StringFormat='${0:F2}'}" 
-                           FontSize="18" 
-                           TextColor="#FF453A"/>
+            <Label Text="Top Expense" FontSize="14" TextColor="Gray" Margin="5,10,0,0"/>
+            <Frame Padding="15" CornerRadius="15" HasShadow="True">
+                <Grid ColumnDefinitions="*, Auto">
+                    <Label Grid.Column="0" Text="{Binding MostExpensiveName}" FontSize="16" FontAttributes="Bold"/>
+                    <Label Grid.Column="1" Text="{Binding MostExpensiveCost, StringFormat='${0:F2}'}" TextColor="#FF453A" FontAttributes="Bold"/>
                 </Grid>
             </Frame>
 

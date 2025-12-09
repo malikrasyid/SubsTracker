@@ -2,10 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using SubsTracker.Models;
 using SubsTracker.Services;
+using System.Collections.ObjectModel;
 
 namespace SubsTracker.ViewModels
 {
-    // This attribute links the navigation parameter "Subscription" to the property below
     [QueryProperty(nameof(Subscription), "Subscription")]
     public partial class SubscriptionDetailViewModel : BaseViewModel
     {
@@ -14,6 +14,11 @@ namespace SubsTracker.ViewModels
         [ObservableProperty]
         private Subscription _subscription;
 
+        public List<string> Categories { get; } = new()
+        { "Streaming", "Gaming", "Software", "Gym", "Utilities", "Music", "Other" };
+
+        public List<BillingCycle> BillingCycles { get; } = Enum.GetValues(typeof(BillingCycle)).Cast<BillingCycle>().ToList();
+
         public SubscriptionDetailViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
@@ -21,7 +26,6 @@ namespace SubsTracker.ViewModels
 
         partial void OnSubscriptionChanged(Subscription value)
         {
-            // Update the Page Title to the subscription name
             if (value != null)
             {
                 Title = value.Name;
@@ -47,20 +51,10 @@ namespace SubsTracker.ViewModels
         [RelayCommand]
         private async Task DeleteAsync()
         {
-            if (_subscription == null) return;
-
-            // Confirm before deleting
-            bool confirm = await Shell.Current.DisplayAlert(
-                "Delete Subscription",
-                $"Are you sure you want to delete {_subscription.Name}?",
-                "Yes",
-                "No");
-
+            bool confirm = await Shell.Current.DisplayAlert("Delete", $"Delete {_subscription.Name}?", "Yes", "No");
             if (confirm)
             {
                 await _databaseService.DeleteSubscriptionAsync(_subscription);
-
-                // Go back to dashboard
                 await Shell.Current.GoToAsync("..");
             }
         }

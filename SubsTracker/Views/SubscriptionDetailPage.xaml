@@ -2,45 +2,59 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SubsTracker.ViewModels"
+             xmlns:models="clr-namespace:SubsTracker.Models"
              x:Class="SubsTracker.Views.SubscriptionDetailPage"
-             Title="Edit Details">
+             Title="Details">
 
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="30">
 
+            <Frame HeightRequest="80" WidthRequest="80"
+                   CornerRadius="40"
+                   BackgroundColor="{Binding Subscription.HexColor}"
+                   Padding="0"
+                   HasShadow="False"
+                   HorizontalOptions="Center">
+                <Label Text="{Binding Subscription.Initial}"
+                       TextColor="White"
+                       FontSize="36"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Frame>
+
             <VerticalStackLayout Spacing="5">
                 <Label Text="Service Name" TextColor="Gray"/>
-                <Entry Text="{Binding Subscription.Name}" 
-                       Placeholder="Name" />
+                <Entry Text="{Binding Subscription.Name}" Placeholder="Name" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="5">
-                <Label Text="Monthly Price" TextColor="Gray"/>
-                <Entry Text="{Binding Subscription.Price}" 
-                       Keyboard="Numeric"
-                       Placeholder="0.00" />
+                <Label Text="Cost" TextColor="Gray"/>
+                <Entry Text="{Binding Subscription.Cost}" Keyboard="Numeric" />
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="5">
-                <Label Text="Renewal Date" TextColor="Gray"/>
-                <DatePicker Date="{Binding Subscription.ExpiryDate}" 
-                            Format="D"/>
+                <Label Text="Category" TextColor="Gray"/>
+                <Picker ItemsSource="{Binding Categories}" 
+                        SelectedItem="{Binding Subscription.Category}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Billing Cycle" TextColor="Gray"/>
+                <Picker ItemsSource="{Binding BillingCycles}" 
+                        SelectedItem="{Binding Subscription.Cycle}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Next Payment" TextColor="Gray"/>
+                <DatePicker Date="{Binding Subscription.NextPaymentDate}" Format="D"/>
             </VerticalStackLayout>
 
             <BoxView HeightRequest="1" Color="LightGray" Margin="0,10" />
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
-                <Button Grid.Column="0" 
-                        Text="Delete" 
-                        Command="{Binding DeleteCommand}"
-                        BackgroundColor="#FF453A" 
-                        TextColor="White"/>
-
-                <Button Grid.Column="1" 
-                        Text="Save Changes" 
-                        Command="{Binding SaveCommand}"
-                        BackgroundColor="{StaticResource Primary}" 
-                        TextColor="White"/>
+                <Button Grid.Column="0" Text="Delete" Command="{Binding DeleteCommand}" BackgroundColor="#FF453A" TextColor="White"/>
+                <Button Grid.Column="1" Text="Save" Command="{Binding SaveCommand}" BackgroundColor="{StaticResource Primary}" TextColor="White"/>
             </Grid>
 
         </VerticalStackLayout>

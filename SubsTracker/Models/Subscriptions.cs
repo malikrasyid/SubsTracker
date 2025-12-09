@@ -2,6 +2,13 @@
 
 namespace SubsTracker.Models
 {
+    public enum BillingCycle
+    {
+        Weekly,
+        Monthly,
+        Yearly
+    }
+
     [Table("Subscriptions")]
     public class Subscription
     {       
@@ -11,13 +18,11 @@ namespace SubsTracker.Models
         [SQLite.MaxLength(100)]
         public string Name { get; set; }       
 
-        public decimal Price { get; set; }      
+        public decimal Cost { get; set; }      
 
         public string Currency { get; set; }    
 
-        public DateTime ExpiryDate { get; set; }
-
-        public string BillingCycle { get; set; } 
+        public BillingCycle BillingCycle { get; set; } 
 
         public DateTime FirstBillDate { get; set; }
 
@@ -31,17 +36,7 @@ namespace SubsTracker.Models
 
         public int ReminderDays { get; set; }
 
-        public string HexColor { get; set; }      
-
         public bool IsActive { get; set; } = true;
-
-
-
-        [Ignore]
-        public string DisplayPrice
-        {
-            get => $"{Currency} {Price:N0}"; 
-        }
 
         [Ignore]
         public int DaysUntilDue
@@ -50,24 +45,21 @@ namespace SubsTracker.Models
         }
 
         [Ignore]
-        public string DueDateString
+        public string Initial => string.IsNullOrWhiteSpace(Name) ? "?" : Name[0].ToString().ToUpper();
+
+        [Ignore]
+        public string HexColor
         {
             get
             {
-                if (DaysUntilDue == 0) return "Due Today";
-                if (DaysUntilDue == 1) return "Due Tomorrow";
-                if (DaysUntilDue < 0) return $"Overdue by {Math.Abs(DaysUntilDue)} days";
-                return $"Due in {DaysUntilDue} days";
-            }
-        }
-
-        [Ignore]
-        public Color ColorObj
-        {            
-            get
-            {
-                if (string.IsNullOrEmpty(HexColor)) return Colors.Gray;
-                return Color.FromArgb(HexColor);
+                return Category switch
+                {
+                    "Streaming" => "#E50914", 
+                    "Music" => "#1DB954",     
+                    "Gaming" => "#107C10",    
+                    "Gym" => "#007AFF",       
+                    _ => "#808080"           
+                };
             }
         }
     }

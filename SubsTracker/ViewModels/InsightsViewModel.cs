@@ -2,24 +2,30 @@
 using CommunityToolkit.Mvvm.Input;
 using SubsTracker.Models;
 using SubsTracker.Services;
-using System.Linq;
+using Microcharts;
+using SkiaSharp;
 
 namespace SubsTracker.ViewModels
 {
     public partial class InsightsViewModel : BaseViewModel
     {
-        // 1. Properties for the UI to display
         [ObservableProperty]
-        private decimal _totalMonthlyExpenses;
+        private decimal _totalMonthlyCost;
 
         [ObservableProperty]
-        private decimal _estimatedYearlyExpenses;
+        private decimal _estimatedYearlyCost;
 
         [ObservableProperty]
         private string _mostExpensiveName = "None";
 
         [ObservableProperty]
-        private decimal _mostExpensivePrice;
+        private decimal _mostExpensiveCost;
+
+        [ObservableProperty]
+        private Chart _categoryChart;
+
+        [ObservableProperty]
+        private string _smartAdvice;
 
         private readonly DatabaseService _databaseService;
         public InsightsViewModel(DatabaseService databaseService)
@@ -41,27 +47,23 @@ namespace SubsTracker.ViewModels
 
                 if (subscriptions.Any())
                 {
-                    // Calculate Monthly Total
-                    TotalMonthlyExpenses = subscriptions.Sum(s => s.Price);
+                    TotalMonthlyCost = subscriptions.Sum(s => s.Cost);
+                    EstimatedYearlyCost = TotalMonthlyCost * 12;
 
-                    // Calculate Yearly (Simple projection: Monthly * 12)
-                    EstimatedYearlyExpenses = _totalMonthlyExpenses * 12;
+                    var expensive = subscriptions.OrderByDescending(s => s.Cost).FirstOrDefault();
+                    MostExpensiveName = expensive?.Name ?? "None";
+                    MostExpensiveCost = expensive?.Cost ?? 0;
 
-                    // Find the most expensive subscription
-                    var expensiveSub = subscriptions.OrderByDescending(s => s.Price).FirstOrDefault();
-                    if (expensiveSub != null)
-                    {
-                        MostExpensiveName = expensiveSub.Name;
-                        MostExpensivePrice = expensiveSub.Price;
-                    }
+                    CreateChart(subscriptions);
+
+                    GenerateAdvice(subscriptions);
                 }
                 else
                 {
-                    // Reset if no data
-                    TotalMonthlyExpenses = 0;
-                    EstimatedYearlyExpenses = 0;
-                    MostExpensiveName = "None";
-                    MostExpensivePrice = 0;
+                    TotalMonthlyCost = 0;
+                    EstimatedYearlyCost = 0;
+                    CategoryChart = null;
+                    SmartAdvice = "Add subscriptions to see insights!";
                 }
             }
             catch (Exception ex)
@@ -72,6 +74,73 @@ namespace SubsTracker.ViewModels
             {
                 IsBusy = false;
             }
+        }
+        private void CreateChart(List<Subscription> subs)
+        {
+            // Group subscriptions by Category and sum their costs
+            var categoryData = subs
+                .GroupBy(s => s.Category)
+                .Select(g => new
+                {
+                    Category = g.Key,
+                    Total = g.Sum(s => s.Cost),
+                    Color = GetColorForCategory(g.Key)
+                })
+                .ToList();
+
+            // Convert to Microcharts entries
+            var entries = categoryData.Select(d => new ChartEntry((float)d.Total)
+            {
+                Label = d.Category,
+                ValueLabel = d.Total.ToString("0.00"),
+                Color = SKColor.Parse(d.Color)
+            }).ToArray();
+
+            // Create the Chart Object
+            CategoryChart = new DonutChart // 'Donut' looks more modern than 'Pie'
+            {
+                Entries = entries,
+                LabelTextSize = 30,
+                HoleRadius = 0.6f, // Makes it a donut
+                BackgroundColor = SKColors.Transparent
+            };
+        }
+
+        private void GenerateAdvice(List<Subscription> subs)
+        {
+            var streamingTotal = subs.Where(s => s.Category == "Streaming").Sum(s => s.Cost);
+            var subCount = subs.Count;
+
+            // Simple "AI" Logic
+            if (streamingTotal > 50)
+            {
+                SmartAdvice = $"You spend ${streamingTotal:F0} on streaming! Consider rotating services (cancel one, watch the other) to save ~${streamingTotal / 2:F0}/mo.";
+            }
+            else if (subCount > 8)
+            {
+                SmartAdvice = "You have a lot of active subscriptions. Check if you are actually using all of them properly.";
+            }
+            else if (MostExpensiveCost > 100)
+            {
+                SmartAdvice = $"{MostExpensiveName} is your biggest expense. Is there a cheaper annual plan available?";
+            }
+            else
+            {
+                SmartAdvice = "Your spending looks balanced! Keep it up.";
+            }
+        }
+
+        private string GetColorForCategory(string category)
+        {
+            return category switch
+            {
+                "Streaming" => "#E50914",
+                "Music" => "#1DB954",
+                "Gaming" => "#107C10",
+                "Gym" => "#007AFF",
+                "Utilities" => "#FF9900",
+                _ => "#808080"
+            };
         }
     }
 }
