@@ -31,7 +31,7 @@ namespace SubsTracker.Services
             {
                 NotificationId = sub.Id, // Use the DB ID so we can cancel it later easily
                 Title = $"Bill Due: {sub.Name}",
-                Description = $"{sub.Currency} {sub.Cost} is due on {sub.NextPaymentDate:dd MMM}.",
+                Description = $"{sub.Currency} {sub.Price} is due on {sub.NextPaymentDate:dd MMM}.",
                 ReturningData = sub.Id.ToString(), // Pass ID to open the Detail Page when tapped
                 Schedule = new NotificationRequestSchedule
                 {

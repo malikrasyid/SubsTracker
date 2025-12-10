@@ -21,8 +21,9 @@ namespace SubsTracker
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            builder.Services.AddSingleton<Services.DatabaseService>();
-            builder.Services.AddSingleton<Services.NotificationService>();
+            builder.Services.AddSingleton<DatabaseService>();
+            builder.Services.AddSingleton<NotificationService>();
+            builder.Services.AddSingleton<AdviceService>();
 
             builder.Services.AddSingleton<DashboardViewModel>();
             builder.Services.AddTransient<AddSubscriptionViewModel>();

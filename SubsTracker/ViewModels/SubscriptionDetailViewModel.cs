@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using SubsTracker.Models;
 using SubsTracker.Services;
-using System.Collections.ObjectModel;
+using SubsTracker.Helpers;
 
 namespace SubsTracker.ViewModels
 {
@@ -12,12 +12,20 @@ namespace SubsTracker.ViewModels
         private readonly DatabaseService _databaseService;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotEditing))]
+        private bool _isEditing;
+
+        public bool IsNotEditing => !IsEditing;
+
+        [ObservableProperty]
         private Subscription _subscription;
 
         public List<string> Categories { get; } = new()
         { "Streaming", "Gaming", "Software", "Gym", "Utilities", "Music", "Other" };
 
-        public List<BillingCycle> BillingCycles { get; } = Enum.GetValues(typeof(BillingCycle)).Cast<BillingCycle>().ToList();
+        public List<BillingPeriodUnit> PeriodUnits { get; } = Enum.GetValues(typeof(BillingPeriodUnit)).Cast<BillingPeriodUnit>().ToList();
+
+        public string FrequencyText => _subscription != null ? SubscriptionHelper.GetFrequencyText(_subscription) : "";
 
         public SubscriptionDetailViewModel(DatabaseService databaseService)
         {
@@ -29,7 +37,26 @@ namespace SubsTracker.ViewModels
             if (value != null)
             {
                 Title = value.Name;
+                OnPropertyChanged(nameof(FrequencyText));
             }
+        }
+
+        [RelayCommand]
+        private void StartEdit()
+        {
+            IsEditing = true;
+        }
+
+        [RelayCommand]
+        private async Task CancelEditAsync()
+        {
+            // Reload data from DB to discard unsaved changes
+            if (_subscription != null)
+            {
+                var original = await _databaseService.GetSubscriptionByIdAsync(_subscription.Id);
+                Subscription = original;
+            }
+            IsEditing = false;
         }
 
         [RelayCommand]
@@ -37,15 +64,16 @@ namespace SubsTracker.ViewModels
         {
             if (_subscription == null) return;
 
-            // This calls the method we made in DatabaseService. 
-            // Since the ID already exists, it will perform an UPDATE, not an INSERT.
+            // Recalculate Next Payment Date if they changed the cycle? 
+            // Ideally, we only recalculate if they explicitly ask, but updating the DB is safe.
+            // If you want to force update the next date based on new interval:
+            // _subscription.NextPaymentDate = SubscriptionHelper.CalculateNextPayment(_subscription);
+
             await _databaseService.SaveSubscriptionAsync(_subscription);
+            IsEditing = false;
+            OnPropertyChanged(nameof(FrequencyText)); // Refresh helper text
 
-            // Notify user
-            await Shell.Current.DisplayAlert("Success", "Subscription updated!", "OK");
-
-            // Go back to the dashboard
-            await Shell.Current.GoToAsync("..");
+            await Shell.Current.DisplayAlert("Success", "Updated!", "OK");
         }
 
         [RelayCommand]

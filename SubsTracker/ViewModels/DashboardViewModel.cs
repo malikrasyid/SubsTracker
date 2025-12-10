@@ -12,7 +12,7 @@ namespace SubsTracker.ViewModels
         public ObservableCollection<Subscription> Subscriptions { get; } = new();
 
         [ObservableProperty]
-        private decimal _totalMonthlyCost;
+        private decimal _totalMonthlyPrice;
 
         private readonly DatabaseService _databaseService;
 
@@ -33,13 +33,8 @@ namespace SubsTracker.ViewModels
             
                 var subs = await _databaseService.GetSubscriptionsAsync();
 
-                if (Subscriptions.Count > 0)
-                    Subscriptions.Clear();
-
-                foreach (var sub in subs)
-                {
-                    Subscriptions.Add(sub);
-                }
+                if (Subscriptions.Count > 0) Subscriptions.Clear();
+                foreach (var sub in subs) Subscriptions.Add(sub);
 
                 CalculateTotal();
             }
@@ -57,7 +52,7 @@ namespace SubsTracker.ViewModels
         private void CalculateTotal()
         {
             // Simple LINQ sum
-            TotalMonthlyCost = Subscriptions.Sum(s => s.Cost);
+            TotalMonthlyPrice = Subscriptions.Sum(s => s.Price);
         }
 
         [RelayCommand]

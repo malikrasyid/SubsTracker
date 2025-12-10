@@ -30,33 +30,70 @@ namespace SubsTracker.Services
                 // If empty, add dummy data
                 var dummyData = new List<Subscription>
                 {
-                    new Subscription {
+                    // 1. Standard Monthly (Netflix)
+                    new Subscription
+                    {
                         Name = "Netflix",
-                        Cost = 15.99m,
+                        Description = "Premium Family Plan (4k)",
+                        Price = 18.99m,
+                        BillingInterval = 1,
+                        PeriodUnit = BillingPeriodUnit.Month,
                         NextPaymentDate = DateTime.Now.AddDays(5),
                         Category = "Streaming",
-                        BillingCycle = BillingCycle.Monthly
+                        Currency = "USD"
                     },
-                    new Subscription {
-                        Name = "Spotify",
-                        Cost = 9.99m,
+
+                    // 2. Weekly (Gym - specific coaching)
+                    new Subscription
+                    {
+                        Name = "Personal Trainer",
+                        Description = "Weekly coaching session",
+                        Price = 25.00m,
+                        BillingInterval = 1,
+                        PeriodUnit = BillingPeriodUnit.Week,
+                        NextPaymentDate = DateTime.Now.AddDays(2),
+                        Category = "Gym",
+                        Currency = "USD"
+                    },
+
+                    // 3. Yearly (VPN)
+                    new Subscription
+                    {
+                        Name = "NordVPN",
+                        Description = "2-Year Plan charged annually",
+                        Price = 69.00m,
+                        BillingInterval = 1,
+                        PeriodUnit = BillingPeriodUnit.Year,
+                        NextPaymentDate = DateTime.Now.AddMonths(4),
+                        Category = "Software",
+                        Currency = "USD"
+                    },
+
+                    // 4. Flexible (Spotify Duo - Every 3 Months scenario?)
+                    // Let's stick to standard Monthly for music
+                    new Subscription
+                    {
+                        Name = "Spotify Duo",
+                        Description = "Music for two",
+                        Price = 12.99m,
+                        BillingInterval = 1,
+                        PeriodUnit = BillingPeriodUnit.Month,
                         NextPaymentDate = DateTime.Now.AddDays(12),
                         Category = "Music",
-                        BillingCycle = BillingCycle.Monthly
+                        Currency = "USD"
                     },
-                    new Subscription {
-                        Name = "Xbox GamePass",
-                        Cost = 14.99m,
-                        NextPaymentDate = DateTime.Now.AddDays(2),
+
+                    // 5. Gaming (Xbox)
+                    new Subscription
+                    {
+                        Name = "Xbox Game Pass",
+                        Description = "Ultimate Tier",
+                        Price = 16.99m,
+                        BillingInterval = 1,
+                        PeriodUnit = BillingPeriodUnit.Month,
+                        NextPaymentDate = DateTime.Now.AddDays(1),
                         Category = "Gaming",
-                        BillingCycle = BillingCycle.Monthly
-                    },
-                    new Subscription {
-                        Name = "Gym",
-                        Cost = 40.00m,
-                        NextPaymentDate = DateTime.Now.AddDays(25),
-                        Category = "Gym",
-                        BillingCycle = BillingCycle.Monthly
+                        Currency = "USD"
                     }
                 };
 

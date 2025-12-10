@@ -4,33 +4,41 @@ using SubsTracker.Models;
 using SubsTracker.Services;
 using Microcharts;
 using SkiaSharp;
+using System.Collections.ObjectModel;
 
 namespace SubsTracker.ViewModels
 {
+    public class ChartLegendItem
+    {
+        public string Name { get; set; }
+        public string Amount { get; set; }
+        public Color Color { get; set; }
+    }
+
     public partial class InsightsViewModel : BaseViewModel
     {
         [ObservableProperty]
-        private decimal _totalMonthlyCost;
+        private decimal _totalMonthlyPrice;
 
         [ObservableProperty]
-        private decimal _estimatedYearlyCost;
-
-        [ObservableProperty]
-        private string _mostExpensiveName = "None";
-
-        [ObservableProperty]
-        private decimal _mostExpensiveCost;
-
+        private decimal _estimatedYearlyPrice;
+       
         [ObservableProperty]
         private Chart _categoryChart;
 
         [ObservableProperty]
-        private string _smartAdvice;
+        private Advice _smartAdvice;
 
         private readonly DatabaseService _databaseService;
-        public InsightsViewModel(DatabaseService databaseService)
+
+        private readonly AdviceService _adviceService;
+
+        public ObservableCollection<ChartLegendItem> LegendItems { get; } = new();
+
+        public InsightsViewModel(DatabaseService databaseService, AdviceService adviceService)
         {
             _databaseService = databaseService;
+            _adviceService = adviceService;
             Title = "Insights";            
         }
 
@@ -47,23 +55,19 @@ namespace SubsTracker.ViewModels
 
                 if (subscriptions.Any())
                 {
-                    TotalMonthlyCost = subscriptions.Sum(s => s.Cost);
-                    EstimatedYearlyCost = TotalMonthlyCost * 12;
-
-                    var expensive = subscriptions.OrderByDescending(s => s.Cost).FirstOrDefault();
-                    MostExpensiveName = expensive?.Name ?? "None";
-                    MostExpensiveCost = expensive?.Cost ?? 0;
+                    TotalMonthlyPrice = subscriptions.Sum(s => s.Price);
+                    EstimatedYearlyPrice = TotalMonthlyPrice * 12;                  
 
                     CreateChart(subscriptions);
 
-                    GenerateAdvice(subscriptions);
+                    SmartAdvice = await _adviceService.GenerateAdviceAsync(subscriptions);
                 }
                 else
                 {
-                    TotalMonthlyCost = 0;
-                    EstimatedYearlyCost = 0;
+                    TotalMonthlyPrice = 0;
+                    EstimatedYearlyPrice = 0;
+                    LegendItems.Clear();
                     CategoryChart = null;
-                    SmartAdvice = "Add subscriptions to see insights!";
                 }
             }
             catch (Exception ex)
@@ -77,57 +81,46 @@ namespace SubsTracker.ViewModels
         }
         private void CreateChart(List<Subscription> subs)
         {
-            // Group subscriptions by Category and sum their costs
             var categoryData = subs
-                .GroupBy(s => s.Category)
+                .GroupBy(s => s.Category.Trim(), StringComparer.OrdinalIgnoreCase)
                 .Select(g => new
                 {
                     Category = g.Key,
-                    Total = g.Sum(s => s.Cost),
-                    Color = GetColorForCategory(g.Key)
+                    Total = g.Sum(s => s.Price),
+                    HexColor = GetColorForCategory(g.Key)
                 })
+                .OrderByDescending(x => x.Total)
                 .ToList();
 
-            // Convert to Microcharts entries
-            var entries = categoryData.Select(d => new ChartEntry((float)d.Total)
-            {
-                Label = d.Category,
-                ValueLabel = d.Total.ToString("0.00"),
-                Color = SKColor.Parse(d.Color)
-            }).ToArray();
+            var entries = new List<ChartEntry>();
+            LegendItems.Clear(); 
 
-            // Create the Chart Object
-            CategoryChart = new DonutChart // 'Donut' looks more modern than 'Pie'
+            foreach (var item in categoryData)
+            {
+                entries.Add(new ChartEntry((float)item.Total)
+                {
+                    Color = SKColor.Parse(item.HexColor),
+                    ValueLabel = "", 
+                    Label = ""
+                });
+
+                LegendItems.Add(new ChartLegendItem
+                {
+                    Name = item.Category,
+                    Amount = item.Total.ToString("F2"),
+                    Color = Color.FromArgb(item.HexColor) 
+                });
+            }
+
+            CategoryChart = new DonutChart
             {
                 Entries = entries,
-                LabelTextSize = 30,
-                HoleRadius = 0.6f, // Makes it a donut
-                BackgroundColor = SKColors.Transparent
+                HoleRadius = 0.6f,        
+                BackgroundColor = SKColors.Transparent,
+                LabelTextSize = 0,        
+                GraphPosition = GraphPosition.Center,
+                Margin = 0
             };
-        }
-
-        private void GenerateAdvice(List<Subscription> subs)
-        {
-            var streamingTotal = subs.Where(s => s.Category == "Streaming").Sum(s => s.Cost);
-            var subCount = subs.Count;
-
-            // Simple "AI" Logic
-            if (streamingTotal > 50)
-            {
-                SmartAdvice = $"You spend ${streamingTotal:F0} on streaming! Consider rotating services (cancel one, watch the other) to save ~${streamingTotal / 2:F0}/mo.";
-            }
-            else if (subCount > 8)
-            {
-                SmartAdvice = "You have a lot of active subscriptions. Check if you are actually using all of them properly.";
-            }
-            else if (MostExpensiveCost > 100)
-            {
-                SmartAdvice = $"{MostExpensiveName} is your biggest expense. Is there a cheaper annual plan available?";
-            }
-            else
-            {
-                SmartAdvice = "Your spending looks balanced! Keep it up.";
-            }
         }
 
         private string GetColorForCategory(string category)

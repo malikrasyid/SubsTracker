@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SubsTracker.Helpers;
 using SubsTracker.Models;
 using SubsTracker.Services;
 using System.Collections.ObjectModel;
@@ -12,10 +13,16 @@ namespace SubsTracker.ViewModels
         private string _name;
 
         [ObservableProperty]
-        private decimal _cost;
+        private string _description;
 
         [ObservableProperty]
-        private DateTime _nextPaymentDate = DateTime.Today;
+        private decimal _price;
+
+        [ObservableProperty]
+        private string _currency;
+
+        [ObservableProperty]
+        private DateTime _firstBillDate = DateTime.Today;
 
         [ObservableProperty]
         private string _selectedCategory;
@@ -23,15 +30,18 @@ namespace SubsTracker.ViewModels
         [ObservableProperty]
         private string _customCategory;
 
+        [ObservableProperty]
+        private int _billingInterval = 1; // Default "1"
+
+        [ObservableProperty]
+        private BillingPeriodUnit _selectedPeriodUnit = BillingPeriodUnit.Month; // Default "Month"
+
+        public List<BillingPeriodUnit> PeriodUnits { get; } = Enum.GetValues(typeof(BillingPeriodUnit)).Cast<BillingPeriodUnit>().ToList();
+
         public ObservableCollection<string> CommonCategories { get; } = new()
         {
             "Streaming", "Gaming", "Software", "Gym", "Utilities", "Other"
         };
-
-        [ObservableProperty]
-        private BillingCycle _selectedCycle = BillingCycle.Monthly;
-
-        public List<BillingCycle> BillingCycles { get; } = Enum.GetValues(typeof(BillingCycle)).Cast<BillingCycle>().ToList();
 
         private readonly DatabaseService _databaseService;
         
@@ -39,32 +49,37 @@ namespace SubsTracker.ViewModels
         {
             _databaseService = databaseService;
             Title = "Add Subscription";
-            SelectedCategory = CommonCategories.First();
         }
 
         [RelayCommand]
         private async Task SaveAsync()
         {
-            if (string.IsNullOrWhiteSpace(Name) || _cost <= 0)
+            if (string.IsNullOrWhiteSpace(Name) || Price <= 0)
             {
                 await Shell.Current.DisplayAlert("Error", "Enter valid name and cost.", "OK");
                 return;
             }
 
-            string finalCategory = _selectedCategory;
-            if (_selectedCategory == "Other" && !string.IsNullOrWhiteSpace(_customCategory))
-            {
-                finalCategory = _customCategory;
-            }
+            string finalCategory = SelectedCategory == "Other" && !string.IsNullOrWhiteSpace(CustomCategory)
+                ? CustomCategory
+                : SelectedCategory;
 
             var newSub = new Subscription
             {
-                Name = _name,
-                Cost = _cost, 
-                NextPaymentDate = _nextPaymentDate, // Fixed
+                Name = Name,
+                Description = Description,
+                Price = Price,
+                Currency = Currency,
+                FirstBillDate = FirstBillDate,
+
+                BillingInterval = BillingInterval,
+                PeriodUnit = SelectedPeriodUnit,
+
                 Category = finalCategory,
-                BillingCycle = _selectedCycle
+                IsActive = true
             };
+
+            newSub.NextPaymentDate = SubscriptionHelper.CalculateNextPayment(newSub);
 
             await _databaseService.SaveSubscriptionAsync(newSub);
             await Shell.Current.GoToAsync("..");

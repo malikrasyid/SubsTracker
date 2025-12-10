@@ -1,12 +1,14 @@
 ﻿using SQLite;
+using SubsTracker.Helpers;
 
 namespace SubsTracker.Models
 {
-    public enum BillingCycle
+    public enum BillingPeriodUnit
     {
-        Weekly,
-        Monthly,
-        Yearly
+        Day,
+        Week,
+        Month,
+        Year
     }
 
     [Table("Subscriptions")]
@@ -16,14 +18,18 @@ namespace SubsTracker.Models
         public int Id { get; set; }
 
         [SQLite.MaxLength(100)]
-        public string Name { get; set; }       
+        public string Name { get; set; }   
+        
+        public string Description { get; set; }
 
-        public decimal Cost { get; set; }      
+        public decimal Price { get; set; }      
 
-        public string Currency { get; set; }    
+        public string Currency { get; set; }
 
-        public BillingCycle BillingCycle { get; set; } 
-
+        public int BillingInterval { get; set; } = 1;
+        
+        public BillingPeriodUnit PeriodUnit { get; set; }
+        
         public DateTime FirstBillDate { get; set; }
 
         public DateTime NextPaymentDate { get; set; }
@@ -32,35 +38,17 @@ namespace SubsTracker.Models
 
         public string Category { get; set; }      
 
-        public string Notes { get; set; }
-
         public int ReminderDays { get; set; }
 
         public bool IsActive { get; set; } = true;
 
         [Ignore]
-        public int DaysUntilDue
-        {
-            get => (NextPaymentDate.Date - DateTime.Now.Date).Days;
-        }
+        public int DaysUntilDue => SubscriptionHelper.GetDaysUntilDue(NextPaymentDate);
 
         [Ignore]
-        public string Initial => string.IsNullOrWhiteSpace(Name) ? "?" : Name[0].ToString().ToUpper();
+        public string Initial => SubscriptionHelper.GetInitial(Name);
 
         [Ignore]
-        public string HexColor
-        {
-            get
-            {
-                return Category switch
-                {
-                    "Streaming" => "#E50914", 
-                    "Music" => "#1DB954",     
-                    "Gaming" => "#107C10",    
-                    "Gym" => "#007AFF",       
-                    _ => "#808080"           
-                };
-            }
-        }
+        public string HexColor => SubscriptionHelper.GetCategoryColor(Category);
     }
 }
