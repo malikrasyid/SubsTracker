@@ -4,6 +4,8 @@ using SubsTracker.Models;
 using SubsTracker.Services;
 using Microcharts;
 using SkiaSharp;
+using SubsTracker.Helpers; 
+using SubsTracker.Constants;
 using System.Collections.ObjectModel;
 
 namespace SubsTracker.ViewModels
@@ -82,12 +84,12 @@ namespace SubsTracker.ViewModels
         private void CreateChart(List<Subscription> subs)
         {
             var categoryData = subs
-                .GroupBy(s => s.Category.Trim(), StringComparer.OrdinalIgnoreCase)
+                .GroupBy(s => s.Category?.Trim() ?? AppConstants.Categories.Other, StringComparer.OrdinalIgnoreCase)
                 .Select(g => new
                 {
                     Category = g.Key,
                     Total = g.Sum(s => s.Price),
-                    HexColor = GetColorForCategory(g.Key)
+                    HexColor = SubscriptionHelper.GetCategoryColor(g.Key)
                 })
                 .OrderByDescending(x => x.Total)
                 .ToList();
@@ -120,19 +122,6 @@ namespace SubsTracker.ViewModels
                 LabelTextSize = 0,        
                 GraphPosition = GraphPosition.Center,
                 Margin = 0
-            };
-        }
-
-        private string GetColorForCategory(string category)
-        {
-            return category switch
-            {
-                "Streaming" => "#E50914",
-                "Music" => "#1DB954",
-                "Gaming" => "#107C10",
-                "Gym" => "#007AFF",
-                "Utilities" => "#FF9900",
-                _ => "#808080"
             };
         }
     }

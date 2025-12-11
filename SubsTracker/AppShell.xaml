@@ -10,17 +10,17 @@
     <TabBar>
         <ShellContent
             Title="Dashboard"
-            Icon="dashboard_icon.png" 
+            Icon="dashboard.png" 
             ContentTemplate="{DataTemplate views:DashboardPage}" />
 
         <ShellContent
             Title="Insights"
-            Icon="chart_icon.png"
+            Icon="pie_chart.png"
             ContentTemplate="{DataTemplate views:InsightsPage}" />
 
         <ShellContent
             Title="Settings"
-            Icon="settings_icon.png"
+            Icon="settings.png"
             ContentTemplate="{DataTemplate views:SettingsPage}" />
     </TabBar>
 

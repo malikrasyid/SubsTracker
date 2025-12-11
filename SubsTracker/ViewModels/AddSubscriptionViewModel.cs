@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SubsTracker.Constants;
 using SubsTracker.Helpers;
 using SubsTracker.Models;
 using SubsTracker.Services;
+using SubsTracker.Constants;
 using System.Collections.ObjectModel;
 
 namespace SubsTracker.ViewModels
@@ -38,10 +40,7 @@ namespace SubsTracker.ViewModels
 
         public List<BillingPeriodUnit> PeriodUnits { get; } = Enum.GetValues(typeof(BillingPeriodUnit)).Cast<BillingPeriodUnit>().ToList();
 
-        public ObservableCollection<string> CommonCategories { get; } = new()
-        {
-            "Streaming", "Gaming", "Software", "Gym", "Utilities", "Other"
-        };
+        public ObservableCollection<string> CommonCategories { get; } = new(AppConstants.Categories.All);
 
         private readonly DatabaseService _databaseService;
         
@@ -60,7 +59,7 @@ namespace SubsTracker.ViewModels
                 return;
             }
 
-            string finalCategory = SelectedCategory == "Other" && !string.IsNullOrWhiteSpace(CustomCategory)
+            string finalCategory = SelectedCategory == AppConstants.Categories.Other && !string.IsNullOrWhiteSpace(CustomCategory)
                 ? CustomCategory
                 : SelectedCategory;
 

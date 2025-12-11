@@ -1,4 +1,5 @@
 ﻿using SubsTracker.Models;
+using SubsTracker.Constants;
 
 namespace SubsTracker.Services
 {
@@ -22,7 +23,10 @@ namespace SubsTracker.Services
                 };
             }
 
-            var streamingTotal = subs.Where(s => s.Category == "Streaming").Sum(s => s.Price);
+            var streamingTotal = subs
+                .Where(s => s.Category == AppConstants.Categories.Streaming)
+                .Sum(s => s.Price);
+
             var total = subs.Sum(s => s.Price);
 
             if (streamingTotal > 50)

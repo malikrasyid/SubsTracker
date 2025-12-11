@@ -1,4 +1,5 @@
-﻿using SubsTracker.Models;
+﻿using SubsTracker.Constants;
+using SubsTracker.Models;
 
 namespace SubsTracker.Helpers
 {
@@ -45,13 +46,14 @@ namespace SubsTracker.Helpers
         {
             return category switch
             {
-                "Streaming" => "#E50914", // Red
-                "Music" => "#1DB954",     // Green
-                "Gaming" => "#107C10",    // Xbox Green
-                "Gym" => "#007AFF",       // Blue
-                "Education" => "#FF9900", // Orange
-                "Software" => "#808080",  // Gray
-                _ => "#505050"            // Dark Gray
+                AppConstants.Categories.Streaming => "#E50914", // Red
+                AppConstants.Categories.Music => "#1DB954",     // Green
+                AppConstants.Categories.Gaming => "#107C10",    // Xbox Green
+                AppConstants.Categories.Gym => "#007AFF",       // Blue
+                AppConstants.Categories.Software => "#808080",  // Gray
+                AppConstants.Categories.Utilities => "#FF9900", // Orange
+                AppConstants.Categories.Work => "#A349A4",      // Purple (Added specific color for Work if needed)
+                _ => "#505050"            // Dark Gray (includes 'Other')
             };
         }
     }

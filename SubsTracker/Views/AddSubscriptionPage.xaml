@@ -4,75 +4,97 @@
              xmlns:vm="clr-namespace:SubsTracker.ViewModels"
              x:Class="SubsTracker.Views.AddSubscriptionPage"
              Title="New Subscription"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+    <Grid RowDefinitions="60, *">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="30">
+        <Grid Grid.Row="0" Padding="15,0" BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
 
-            <Label Text="Add Details" 
-                   FontSize="24" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center"
-                   Margin="0,0,0,20" />
+            <ImageButton Source="back.png"
+                     Command="{Binding GoBackCommand}"
+                     HeightRequest="24"
+                     WidthRequest="24"
+                     HorizontalOptions="Start"
+                     VerticalOptions="Center"
+                     BackgroundColor="Transparent"/>
 
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Service Name" TextColor="Gray"/>
-                <Entry Text="{Binding Name}" Placeholder="Netflix" />
-            </VerticalStackLayout>
+            <Label Text="{Binding Title}"
+               FontSize="18"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               InputTransparent="True"
+               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+        </Grid>
 
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Cost" TextColor="Gray"/>
-                <Entry Text="{Binding Cost}" Keyboard="Numeric" Placeholder="0.00" />
-            </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Billing Cycle" TextColor="Gray"/>
-                <Picker ItemsSource="{Binding BillingCycles}" 
-            SelectedItem="{Binding SelectedCycle}" />
-            </VerticalStackLayout>
+        <ScrollView>
+            <VerticalStackLayout Spacing="20" Padding="30">
 
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Category" TextColor="Gray"/>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Service Name" TextColor="Gray"/>
+                    <Entry Text="{Binding Name}" Placeholder="Netflix" />
+                </VerticalStackLayout>
 
-                <Picker ItemsSource="{Binding CommonCategories}" 
-            SelectedItem="{Binding SelectedCategory}" />
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Description" TextColor="Gray"/>
+                    <Entry Text="{Binding Description}" Placeholder="e.g. Family Plan, 4K Streaming"/>
+                </VerticalStackLayout>
 
-                <Entry Placeholder="Type custom category..." 
-           Text="{Binding CustomCategory}">
-                    <Entry.Triggers>
-                        <DataTrigger TargetType="Entry" 
-                         Binding="{Binding SelectedCategory}" 
-                         Value="Other">
-                            <Setter Property="IsVisible" Value="True" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Entry" 
-                         Binding="{Binding SelectedCategory}" 
-                         Value="Streaming">
-                            <Setter Property="IsVisible" Value="False" />
-                        </DataTrigger>
-                    </Entry.Triggers>
-                </Entry>
-            </VerticalStackLayout>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Cost" TextColor="Gray"/>
+                    <Entry Text="{Binding Price}" Keyboard="Numeric" Placeholder="0.00" />
+                </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Next Payment" TextColor="Gray"/>
-                <DatePicker Date="{Binding NextPaymentDate}" Format="D" />
-            </VerticalStackLayout>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Billing Cycle" TextColor="Gray"/>
+                    <Picker ItemsSource="{Binding BillingInterval}" 
+                        SelectedItem="{Binding SelectedPeriodUnit}" />
+                </VerticalStackLayout>
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,30,0,0">
-                <Button Grid.Column="0" 
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Category" TextColor="Gray"/>
+
+                    <Picker ItemsSource="{Binding CommonCategories}" 
+                        SelectedItem="{Binding SelectedCategory}" />
+
+                    <Entry Placeholder="Type custom category..." 
+                       Text="{Binding CustomCategory}">
+                        <Entry.Triggers>
+                            <DataTrigger TargetType="Entry" 
+                                     Binding="{Binding SelectedCategory}" 
+                                     Value="Other">
+                                <Setter Property="IsVisible" Value="True" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Entry" 
+                                     Binding="{Binding SelectedCategory}" 
+                                     Value="Streaming">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Entry.Triggers>
+                    </Entry>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Next Payment" TextColor="Gray"/>
+                    <DatePicker Date="{Binding NextPaymentDate}" Format="D" />
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,30,0,0">
+                    <Button Grid.Column="0" 
                         Text="Cancel"
                         Command="{Binding CancelCommand}"
                         BackgroundColor="LightGray"
                         TextColor="Black" />
 
-                <Button Grid.Column="1" 
+                    <Button Grid.Column="1" 
                         Text="Save"
                         Command="{Binding SaveCommand}"
                         BackgroundColor="{StaticResource Primary}"
                         TextColor="White" />
-            </Grid>
+                </Grid>
 
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

@@ -35,7 +35,7 @@ namespace SubsTracker.Services
                     {
                         Name = "Netflix",
                         Description = "Premium Family Plan (4k)",
-                        Price = 18.99m,
+                        Price = 18,
                         BillingInterval = 1,
                         PeriodUnit = BillingPeriodUnit.Month,
                         NextPaymentDate = DateTime.Now.AddDays(5),
@@ -48,7 +48,7 @@ namespace SubsTracker.Services
                     {
                         Name = "Personal Trainer",
                         Description = "Weekly coaching session",
-                        Price = 25.00m,
+                        Price = 25,
                         BillingInterval = 1,
                         PeriodUnit = BillingPeriodUnit.Week,
                         NextPaymentDate = DateTime.Now.AddDays(2),
@@ -61,7 +61,7 @@ namespace SubsTracker.Services
                     {
                         Name = "NordVPN",
                         Description = "2-Year Plan charged annually",
-                        Price = 69.00m,
+                        Price = 69,
                         BillingInterval = 1,
                         PeriodUnit = BillingPeriodUnit.Year,
                         NextPaymentDate = DateTime.Now.AddMonths(4),
@@ -75,7 +75,7 @@ namespace SubsTracker.Services
                     {
                         Name = "Spotify Duo",
                         Description = "Music for two",
-                        Price = 12.99m,
+                        Price = 12,
                         BillingInterval = 1,
                         PeriodUnit = BillingPeriodUnit.Month,
                         NextPaymentDate = DateTime.Now.AddDays(12),
@@ -88,7 +88,7 @@ namespace SubsTracker.Services
                     {
                         Name = "Xbox Game Pass",
                         Description = "Ultimate Tier",
-                        Price = 16.99m,
+                        Price = 16,
                         BillingInterval = 1,
                         PeriodUnit = BillingPeriodUnit.Month,
                         NextPaymentDate = DateTime.Now.AddDays(1),

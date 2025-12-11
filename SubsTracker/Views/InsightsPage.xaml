@@ -46,7 +46,7 @@
                TextColor="Gray" 
                HorizontalOptions="Center"/>
 
-                            <Label Text="{Binding TotalMonthlyCost, StringFormat='${0:F0}'}" 
+                            <Label Text="{Binding TotalMonthlyPrice, StringFormat='${0:F0}'}" 
                FontSize="20" 
                FontAttributes="Bold" 
                TextColor="{AppThemeBinding Light=Black, Dark=White}"

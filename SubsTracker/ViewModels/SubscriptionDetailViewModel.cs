@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SubsTracker.Constants;
+using SubsTracker.Helpers;
 using SubsTracker.Models;
 using SubsTracker.Services;
-using SubsTracker.Helpers;
 
 namespace SubsTracker.ViewModels
 {
@@ -20,8 +21,7 @@ namespace SubsTracker.ViewModels
         [ObservableProperty]
         private Subscription _subscription;
 
-        public List<string> Categories { get; } = new()
-        { "Streaming", "Gaming", "Software", "Gym", "Utilities", "Music", "Other" };
+        public List<string> Categories { get; } = AppConstants.Categories.All;
 
         public List<BillingPeriodUnit> PeriodUnits { get; } = Enum.GetValues(typeof(BillingPeriodUnit)).Cast<BillingPeriodUnit>().ToList();
 

@@ -5,40 +5,53 @@
              xmlns:models="clr-namespace:SubsTracker.Models"
              x:Class="SubsTracker.Views.DashboardPage"
              Title="Dashboard"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
 
-    <Grid>
-        <RefreshView Command="{Binding LoadSubscriptionsCommand}" 
+    <Grid RowDefinitions="60, *">
+
+        <Grid Grid.Row="0" Padding="15,0" BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+
+            <Label Text="{Binding Tittle}"
+               FontSize="18"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               InputTransparent="True"
+               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+            <ImageButton Source="bell.png"
+                 HeightRequest="24"
+                 WidthRequest="24"
+                 HorizontalOptions="End"
+                 VerticalOptions="Center"
+                 BackgroundColor="Transparent"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <RefreshView Command="{Binding LoadSubscriptionsCommand}" 
                      IsRefreshing="{Binding IsBusy}">
 
-            <CollectionView ItemsSource="{Binding Subscriptions}"
+                <CollectionView ItemsSource="{Binding Subscriptions}"
                             SelectionMode="None">
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="1" VerticalItemSpacing="10" />
-                </CollectionView.ItemsLayout>
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" Span="1" />
+                    </CollectionView.ItemsLayout>
 
-                <CollectionView.Header>
-                    <BoxView HeightRequest="10" Color="Transparent" />
-                </CollectionView.Header>
-                <CollectionView.Footer>
-                    <BoxView HeightRequest="80" Color="Transparent" />
-                </CollectionView.Footer>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Subscription">
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Subscription">
+                            <Frame Margin="15, 5" Padding="15" CornerRadius="12" HasShadow="True" BorderColor="Transparent" BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
 
-                        <Frame Margin="15,5" Padding="15" CornerRadius="12" HasShadow="True" BorderColor="Transparent" BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
-
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer 
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer 
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DashboardViewModel}}, Path=GoToDetailsCommand}"
                                     CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
+                                </Frame.GestureRecognizers>
 
-                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <Grid ColumnDefinitions="Auto, *, Auto">
 
-                                <Frame Grid.Column="0"
+                                    <Frame Grid.Column="0"
                                        HeightRequest="45" WidthRequest="45"
                                        CornerRadius="23"
                                        BackgroundColor="{Binding HexColor}"
@@ -46,69 +59,68 @@
                                        HasShadow="False"
                                        Margin="0,0,15,0"
                                        VerticalOptions="Center">
-                                    <Label Text="{Binding Initial}"
+                                        <Label Text="{Binding Initial}"
                                            TextColor="White"
                                            FontSize="20"
                                            FontAttributes="Bold"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"/>
-                                </Frame>
+                                    </Frame>
 
-                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
 
-                                    <Label Text="{Binding Name}" 
+                                        <Label Text="{Binding Name}" 
                                            FontSize="16" 
                                            FontAttributes="Bold" 
                                            LineBreakMode="TailTruncation"/>
 
-                                    <Label Text="{Binding Description}" 
+                                        <Label Text="{Binding Description}" 
                                            FontSize="12" 
                                            TextColor="Gray" 
                                            LineBreakMode="TailTruncation"/>
 
-                                    <Label Text="{Binding DaysUntilDue, StringFormat='Due in {0} days'}" 
+                                        <Label Text="{Binding DaysUntilDue, StringFormat='Due in {0} days'}" 
                                            FontSize="11" 
                                            TextColor="{StaticResource Primary}" 
                                            Margin="0,2,0,0"/>
-                                </VerticalStackLayout>
+                                    </VerticalStackLayout>
 
-                                <Label Grid.Column="2" 
+                                    <Label Grid.Column="2" 
                                        Text="{Binding Price, StringFormat='${0:F2}'}" 
                                        FontSize="16" 
                                        FontAttributes="Bold"
                                        VerticalOptions="Center" 
                                        TextColor="{AppThemeBinding Light=Black, Dark=White}" />
-                            </Grid>
-                        </Frame>
+                                </Grid>
+                            </Frame>
 
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
 
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
-                        <Label Text="📅" FontSize="60" HorizontalOptions="Center"/>
-                        <Label Text="No subscriptions yet" 
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
+                            <Label Text="📅" FontSize="60" HorizontalOptions="Center"/>
+                            <Label Text="No subscriptions yet" 
                                FontSize="18" FontAttributes="Bold" TextColor="Gray" HorizontalOptions="Center"/>
-                        <Label Text="Tap the + button to start tracking" 
+                            <Label Text="Tap the + button to start tracking" 
                                FontSize="14" TextColor="Gray" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
 
-            </CollectionView>
-        </RefreshView>
+                </CollectionView>
+            </RefreshView>
 
-        <Button Text="+"
+            <ImageButton Source ="plus.png"
                 Command="{Binding GoToAddSubscriptionCommand}"
                 BackgroundColor="{StaticResource Primary}"
-                TextColor="White"
-                CornerRadius="30"
+                CornerRadius="20"
                 WidthRequest="60"
                 HeightRequest="60"
-                FontSize="32"
                 Padding="0"
                 HorizontalOptions="End"
                 VerticalOptions="End"
-                Margin="25"
+                Margin="12"
                 Shadow="{Shadow Brush=Black, Offset='4,4', Opacity=0.4}" />
+        </Grid>
     </Grid>
 </ContentPage>
