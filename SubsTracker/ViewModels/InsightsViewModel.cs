@@ -117,7 +117,7 @@ namespace SubsTracker.ViewModels
             CategoryChart = new DonutChart
             {
                 Entries = entries,
-                HoleRadius = 0.6f,        
+                HoleRadius = 0.85f,        
                 BackgroundColor = SKColors.Transparent,
                 LabelTextSize = 0,        
                 GraphPosition = GraphPosition.Center,

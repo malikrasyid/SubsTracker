@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:SubsTracker.ViewModels"
              x:Class="SubsTracker.Views.SubscriptionDetailPage"
              Title="{Binding Title}"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
 
     <Grid RowDefinitions="60, *">
@@ -26,7 +27,7 @@
                InputTransparent="True"
                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
         </Grid>
-        <ScrollView>
+        <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="20" Padding="25">
 
                 <Frame HeightRequest="80" WidthRequest="80"

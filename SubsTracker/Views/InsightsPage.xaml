@@ -30,13 +30,19 @@
                     <Label Text="Spending by Category" FontAttributes="Bold" />
 
                     <Grid>
-
                         <micro:ChartView Chart="{Binding CategoryChart}" 
-                     HeightRequest="200"
-                     WidthRequest="200"
+                     HeightRequest="260"
+                     WidthRequest="260"
                      HorizontalOptions="Center"
-                     VerticalOptions="Center"/>
+                     VerticalOptions="Center">
+                            <micro:ChartView.Shadow>
+                                <Shadow Brush="Black" 
+                    Offset="5,5" 
+                    Radius="10" 
+                    Opacity="0.2" />
+                            </micro:ChartView.Shadow>
 
+                        </micro:ChartView>
                         <VerticalStackLayout HorizontalOptions="Center" 
                          VerticalOptions="Center"
                          InputTransparent="True">

@@ -6,19 +6,20 @@
              Title="New Subscription"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+    
     <Grid RowDefinitions="60, *">
 
-        <Grid Grid.Row="0" Padding="15,0" BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
+        <Grid Grid.Row="0" Padding="15,0">
 
             <ImageButton Source="back.png"
-                     Command="{Binding GoBackCommand}"
+                     Command="{Binding CancelCommand}"
                      HeightRequest="24"
                      WidthRequest="24"
                      HorizontalOptions="Start"
                      VerticalOptions="Center"
                      BackgroundColor="Transparent"/>
 
-            <Label Text="{Binding Title}"
+            <Label Text="Add New Subscription"
                FontSize="18"
                FontAttributes="Bold"
                HorizontalOptions="Center"
@@ -28,7 +29,7 @@
         </Grid>
 
 
-        <ScrollView>
+        <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="20" Padding="30">
 
                 <VerticalStackLayout Spacing="5">
@@ -42,7 +43,7 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="5">
-                    <Label Text="Cost" TextColor="Gray"/>
+                    <Label Text="Price" TextColor="Gray"/>
                     <Entry Text="{Binding Price}" Keyboard="Numeric" Placeholder="0.00" />
                 </VerticalStackLayout>
 
@@ -55,8 +56,8 @@
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Category" TextColor="Gray"/>
 
-                    <Picker ItemsSource="{Binding CommonCategories}" 
-                        SelectedItem="{Binding SelectedCategory}" />
+                    <Picker ItemsSource="{Binding PeriodUnits}" 
+                        SelectedItem="{Binding SelectedPeriodUnit}" />
 
                     <Entry Placeholder="Type custom category..." 
                        Text="{Binding CustomCategory}">
