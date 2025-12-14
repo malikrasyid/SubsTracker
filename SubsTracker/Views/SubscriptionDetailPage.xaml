@@ -13,148 +13,194 @@
 
             <ImageButton Source="back.png"
                      Command="{Binding GoBackCommand}"
-                     HeightRequest="24"
-                     WidthRequest="24"
+                     HeightRequest="40"
+                     WidthRequest="40"
+                     Padding="6"
                      HorizontalOptions="Start"
                      VerticalOptions="Center"
                      BackgroundColor="Transparent"/>
 
-            <Label Text="{Binding Title}"
+            <Label Text="Subscription Details "
                FontSize="18"
                FontAttributes="Bold"
                HorizontalOptions="Center"
                VerticalOptions="Center"
                InputTransparent="True"
                TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+            
+            
+
+                <ImageButton Source="edit.png" 
+                             Command="{Binding StartEditCommand}"
+                             HeightRequest="40"
+                             WidthRequest="40"
+                             HorizontalOptions="End"
+                             VerticalOptions="Center"
+                             Padding="6"
+                             BackgroundColor="Transparent"/>
+
+                
+            
         </Grid>
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Spacing="20" Padding="25">
+
+            <VerticalStackLayout Spacing="20" Padding="15">
 
                 <Frame HeightRequest="80" WidthRequest="80"
-                   CornerRadius="40"
-                   BackgroundColor="{Binding Subscription.HexColor}"
-                   Padding="0"
-                   HasShadow="False"
-                   HorizontalOptions="Center"
-                   Margin="0,10,0,10">
-                    <Label Text="{Binding Subscription.Initial}"
-                       TextColor="White"
-                       FontSize="36"
-                       FontAttributes="Bold"
+                       CornerRadius="40"
+                       BackgroundColor="{Binding Subscription.HexColor}"
+                       Padding="0"
+                       HasShadow="False"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center"/>
+                       Margin="0,10,0,10">
+                    <Label Text="{Binding Subscription.Initial}"
+                           TextColor="White"
+                           FontSize="36"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
                 </Frame>
 
                 <VerticalStackLayout Spacing="15" IsVisible="{Binding IsNotEditing}">
 
                     <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
                         <Label Text="{Binding Subscription.Name}" 
-                           FontSize="24" FontAttributes="Bold" HorizontalOptions="Center"/>
+                               FontSize="24" FontAttributes="Bold" HorizontalOptions="Center"/>
                         <Label Text="{Binding Subscription.Description}" 
-                           FontSize="14" TextColor="Gray" HorizontalOptions="Center"/>
+                               FontSize="14" TextColor="Gray" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="#E0E0E0" Margin="10"/>
+                    <VerticalStackLayout Spacing="20" Padding="6">
 
-                    <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto" RowSpacing="20">
+                        <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                               CornerRadius="15"
+                               Padding="15"
+                               HasShadow="True"
+                               BorderColor="Transparent">
+                            <Grid ColumnDefinitions="*" RowDefinitions="Auto, Auto, Auto, Auto" RowSpacing="15">
+                                <VerticalStackLayout Grid.Row="0">
+                                    <Label Text="PRICE" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Subscription.Price, StringFormat='${0:F2}'}" FontSize="18"/>
+                                </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Row="0" Grid.Column="0">
-                            <Label Text="PRICE" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
-                            <Label Text="{Binding Subscription.Price, StringFormat='${0:F2}'}" FontSize="18"/>
-                        </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="1">
+                                    <Label Text="CYCLE" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
+                                    <Label Text="{Binding FrequencyText}" FontSize="18"/>
+                                </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Row="0" Grid.Column="1">
-                            <Label Text="CYCLE" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
-                            <Label Text="{Binding FrequencyText}" FontSize="18"/>
-                        </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="2" >
+                                    <Label Text="CATEGORY" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Subscription.Category}" FontSize="18"/>
+                                </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Row="1" Grid.Column="0">
-                            <Label Text="CATEGORY" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
-                            <Label Text="{Binding Subscription.Category}" FontSize="18"/>
-                        </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Row="3">
+                                    <Label Text="NEXT BILL" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Subscription.NextPaymentDate, StringFormat='{0:MMM dd, yyyy}'}" FontSize="18"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+                        
+                        <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,0,0,0">
+                            <Button Grid.Column="0" Text="Cancel" 
+                                Command="{Binding CancelCommand}" 
+                                BackgroundColor="#E0E0E0"
+                                CornerRadius="12"
+                                TextColor="Black"/>
 
-                        <VerticalStackLayout Grid.Row="1" Grid.Column="1">
-                            <Label Text="NEXT BILL" FontSize="10" TextColor="Gray" FontAttributes="Bold"/>
-                            <Label Text="{Binding Subscription.NextPaymentDate, StringFormat='{0:MMM dd, yyyy}'}" FontSize="18"/>
-                        </VerticalStackLayout>
-
-                    </Grid>
-
-                    <Button Text="Edit Subscription" 
-                        Command="{Binding StartEditCommand}" 
-                        BackgroundColor="{StaticResource Primary}" 
-                        TextColor="White"
-                        Margin="0,20,0,0"/>
-
-                    <Button Text="Delete" 
-                        Command="{Binding DeleteCommand}" 
-                        BackgroundColor="Transparent" 
-                        TextColor="#FF453A"
-                        BorderColor="#FF453A"
-                        BorderWidth="1"/>
+                            <Button Grid.Column="1" Text="Delete" 
+                                Command="{Binding DeleteCommand}"
+                                CornerRadius="12"
+                                BackgroundColor="#FF453A" 
+                                TextColor="White"/>
+                        </Grid>
+                    </VerticalStackLayout>
 
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="15" IsVisible="{Binding IsEditing}">
 
-                    <Label Text="Edit Details" FontSize="18" FontAttributes="Bold" TextColor="Gray"/>
+                    <Frame BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                               CornerRadius="15"
+                               Padding="15"
+                               HasShadow="True"
+                               BorderColor="Transparent">
+                        
+                        <Grid ColumnDefinitions="*" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" RowSpacing="15">
 
-                    <VerticalStackLayout Spacing="5">
-                        <Label Text="Name" TextColor="Gray" FontSize="12"/>
-                        <Entry Text="{Binding Subscription.Name}" Placeholder="Service Name" />
-                    </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="0" Spacing="5">
+                                <Label Text="Name" TextColor="Gray" FontSize="12"/>
+                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="15,0" HeightRequest="50">
+                                    <Entry Text="{Binding Subscription.Name}" Placeholder="Service Name" VerticalOptions="Center"/>
+                                </Border>
+                            </VerticalStackLayout>
 
-                    <VerticalStackLayout Spacing="5">
-                        <Label Text="Description" TextColor="Gray" FontSize="12"/>
-                        <Entry Text="{Binding Subscription.Description}" Placeholder="e.g. Family Plan" />
-                    </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Spacing="5">
+                                <Label Text="Description" TextColor="Gray" FontSize="12"/>
+                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="15,0" HeightRequest="50">
+                                    <Entry Text="{Binding Subscription.Description}" Placeholder="Details..." VerticalOptions="Center"/>
+                                </Border>
+                            </VerticalStackLayout>
 
-                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Price" TextColor="Gray" FontSize="12"/>
-                            <Entry Text="{Binding Subscription.Price}" Keyboard="Numeric" />
-                        </VerticalStackLayout>
+                            <Grid Grid.Row="2
+                                  " ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="Price" TextColor="Gray" FontSize="12"/>
+                                    <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="15,0" HeightRequest="50">
+                                        <Entry Text="{Binding Subscription.Price}" Keyboard="Numeric" VerticalOptions="Center"/>
+                                    </Border>
+                                </VerticalStackLayout>
 
-                        <VerticalStackLayout Spacing="5" Grid.Column="1">
-                            <Label Text="Currency" TextColor="Gray" FontSize="12"/>
-                            <Entry Text="{Binding Subscription.Currency}" WidthRequest="60" HorizontalTextAlignment="Center"/>
-                        </VerticalStackLayout>
-                    </Grid>
+                                <VerticalStackLayout Spacing="5" Grid.Column="1">
+                                    <Label Text="Currency" TextColor="Gray" FontSize="12"/>
+                                    <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="10,0" HeightRequest="50">
+                                        <Entry Text="{Binding Subscription.Currency}" WidthRequest="60" HorizontalTextAlignment="Center"/>
+                                    </Border>
+                                </VerticalStackLayout>
+                            </Grid>
 
-                    <Label Text="Billing Frequency" TextColor="Gray" FontSize="12" Margin="0,5,0,0"/>
-                    <Grid ColumnDefinitions="*, 2*" ColumnSpacing="10">
-                        <Entry Grid.Column="0" 
-                           Text="{Binding Subscription.BillingInterval}" 
-                           Keyboard="Numeric" 
-                           HorizontalTextAlignment="Center" 
-                           Placeholder="1"/>
+                            <VerticalStackLayout Grid.Row="3" Spacing="5">
+                                <Label Text="Billing Frequency" TextColor="Gray" FontSize="12" Margin="0,5,0,0"/>
+                                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
+                                    <Border  Grid.Column="0" StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="10,0" HeightRequest="50">
+                                        <Entry Text="{Binding Subscription.BillingInterval}" 
+                                            Keyboard="Numeric" 
+                                            HorizontalTextAlignment="Center" 
+                                            Placeholder="1"/>
+                                    </Border>
+                                    <Border Grid.Column="1" StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="5,0" HeightRequest="50">
+                                        <Picker  
+                                         ItemsSource="{Binding PeriodUnits}" 
+                                         SelectedItem="{Binding Subscription.PeriodUnit}" />
+                                    </Border>
+                                </Grid>
+                            </VerticalStackLayout>
+                            
+                            <VerticalStackLayout Grid.Row="4" Spacing="5">
+                                <Label Text="Category" TextColor="Gray" FontSize="12"/>
+                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="5,0" HeightRequest="50">
+                                    <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding Subscription.Category}" VerticalTextAlignment="Center"/>
+                                </Border>
+                            </VerticalStackLayout>
 
-                        <Picker Grid.Column="1" 
-                            ItemsSource="{Binding PeriodUnits}" 
-                            SelectedItem="{Binding Subscription.PeriodUnit}" />
-                    </Grid>
+                            <VerticalStackLayout Grid.Row="5" Spacing="5">
+                                <Label Text="Next Payment Date" TextColor="Gray" FontSize="12"/>
+                                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#F3F4F6" Padding="15,0" HeightRequest="50">
+                                    <DatePicker Date="{Binding Subscription.NextPaymentDate}" Format="D" VerticalOptions="Center"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+                    
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,0,0,0">
+                        <Button Grid.Column="0" Text="Cancel" 
+                                Command="{Binding CancelEditCommand}" 
+                                BackgroundColor="#E0E0E0" 
+                                TextColor="Black"/>
 
-                    <VerticalStackLayout Spacing="5">
-                        <Label Text="Category" TextColor="Gray" FontSize="12"/>
-                        <Picker ItemsSource="{Binding Categories}" 
-                            SelectedItem="{Binding Subscription.Category}" />
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout Spacing="5">
-                        <Label Text="Next Payment Date" TextColor="Gray" FontSize="12"/>
-                        <DatePicker Date="{Binding Subscription.NextPaymentDate}" Format="D"/>
-                    </VerticalStackLayout>
-
-                    <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,20,0,0">
-                        <Button Text="Cancel" 
-                            Command="{Binding CancelEditCommand}" 
-                            BackgroundColor="#E0E0E0" 
-                            TextColor="Black"/>
-
-                        <Button Text="Save Changes" 
-                            Command="{Binding SaveCommand}" 
-                            BackgroundColor="{StaticResource Primary}" 
-                            TextColor="White"/>
+                        <Button Grid.Column="1" Text="Save Changes" 
+                                Command="{Binding SaveCommand}" 
+                                BackgroundColor="{StaticResource Primary}" 
+                                TextColor="White"/>
                     </Grid>
 
                 </VerticalStackLayout>

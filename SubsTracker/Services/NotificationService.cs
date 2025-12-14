@@ -1,57 +1,67 @@
-﻿using Plugin.LocalNotification;
-using Plugin.LocalNotification.AndroidOption; // Needed for specific Android settings
-using SubsTracker.Models;
+﻿using SubsTracker.Models;
+using SubsTracker.Helpers; // To use SubscriptionHelper logic
 
 namespace SubsTracker.Services
 {
     public class NotificationService
     {
-        // 1. Schedule a Notification
-        public async Task ScheduleSubscriptionReminder(Subscription sub)
+        private readonly DatabaseService _databaseService;
+
+        public NotificationService(DatabaseService databaseService)
         {
-            // Permission Check (Crucial for Android 13+ and iOS)
-            if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
-            {
-                await LocalNotificationCenter.Current.RequestNotificationPermission();
-            }
-
-            // Logic: When should we notify?
-            // If ReminderDays = 1, we notify 1 day before the NextPaymentDate
-            var notifyDate = sub.NextPaymentDate.AddDays(-sub.ReminderDays);
-
-            // If that date is in the past (e.g., user is adding a sub due today), 
-            // set it for 1 hour from now or skip. Let's set it to 9:00 AM.
-            var notifyTime = new DateTime(notifyDate.Year, notifyDate.Month, notifyDate.Day, 9, 0, 0);
-
-            // If the calculated time is already passed, don't spam the user immediately.
-            // (Optional logic: You could schedule it for next month's cycle)
-            if (notifyTime < DateTime.Now) return;
-
-            var notification = new NotificationRequest
-            {
-                NotificationId = sub.Id, // Use the DB ID so we can cancel it later easily
-                Title = $"Bill Due: {sub.Name}",
-                Description = $"{sub.Currency} {sub.Price} is due on {sub.NextPaymentDate:dd MMM}.",
-                ReturningData = sub.Id.ToString(), // Pass ID to open the Detail Page when tapped
-                Schedule = new NotificationRequestSchedule
-                {
-                    NotifyTime = notifyTime,
-                    RepeatType = NotificationRepeat.No // We will reschedule manually after each payment for accuracy
-                },
-                Android = new AndroidOptions
-                {
-                    ChannelId = "subtrack_reminders",
-                    IconSmallName = { ResourceName = "icon_notification" } // You need an icon in Resources/Drawable
-                }
-            };
-
-            await LocalNotificationCenter.Current.Show(notification);
+            _databaseService = databaseService;
         }
 
-        // 2. Cancel a Notification (When user deletes a sub or edits dates)
-        public void CancelReminder(int subscriptionId)
+        public async Task<List<Notification>> GetNotificationsAsync()
         {
-            LocalNotificationCenter.Current.Cancel(subscriptionId);
+            // 1. First, check if we need to generate new alerts
+            await CheckAndGenerateNotifications();
+
+            // 2. Then return the list from DB
+            return await _databaseService.GetNotificationsAsync();
+        }
+
+        public async Task MarkAsReadAsync(Notification notification)
+        {
+            await _databaseService.MarkNotificationAsReadAsync(notification.Id);
+        }
+
+        // --- THE LOGIC ENGINE ---
+        private async Task CheckAndGenerateNotifications()
+        {
+            var subs = await _databaseService.GetSubscriptionsAsync();
+            var existingNotifications = await _databaseService.GetNotificationsAsync();
+
+            foreach (var sub in subs)
+            {
+                // 1. Calculate days until due using your existing Helper
+                int daysDue = SubscriptionHelper.GetDaysUntilDue(sub.NextPaymentDate);
+
+                // 2. Logic: Notify if due in 3 days, 1 day, or Today (0 days)
+                if (daysDue <= 3 && daysDue >= 0)
+                {
+                    // 3. SPAM PREVENTION:
+                    // Check if we already created a notification for this subscription TODAY.
+                    bool alreadyNotifiedToday = existingNotifications.Any(n => 
+                        n.SubscriptionId == sub.Id && 
+                        n.Timestamp.Date == DateTime.Today);
+
+                    if (!alreadyNotifiedToday)
+                    {
+                        var newNote = new Notification
+                        {
+                            Title = daysDue == 0 ? $"{sub.Name} is due TODAY!" : $"Upcoming Payment: {sub.Name}",
+                            Message = $"Prepare ${sub.Price} for your {sub.BillingInterval} {sub.PeriodUnit} payment.",
+                            Timestamp = DateTime.Now,
+                            IsRead = false,
+                            SubscriptionId = sub.Id,
+                            CategoryColor = sub.HexColor // Uses the model's color logic
+                        };
+
+                        await _databaseService.SaveNotificationAsync(newNote);
+                    }
+                }
+            }
         }
     }
 }

@@ -11,5 +11,6 @@ public partial class AppShell : Shell
         // Register routes for pages that are NOT in the bottom tabs
         Routing.RegisterRoute(nameof(AddSubscriptionPage), typeof(AddSubscriptionPage));
         Routing.RegisterRoute(nameof(SubscriptionDetailPage), typeof(SubscriptionDetailPage));
+        Routing.RegisterRoute(nameof(NotificationPage), typeof(NotificationPage));
     }
 }

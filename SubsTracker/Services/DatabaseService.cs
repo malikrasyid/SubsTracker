@@ -17,6 +17,8 @@ namespace SubsTracker.Services
 
             await _database.CreateTableAsync<Subscription>();
 
+            await _database.CreateTableAsync<Notification>();
+
             await SeedDatabase();
         }
 
@@ -147,9 +149,34 @@ namespace SubsTracker.Services
             var query = "SELECT Category, SUM(Price) as TotalAmount FROM Subscriptions WHERE IsActive = 1 GROUP BY Category";
             return await _database.QueryAsync<CategoryTotal>(query);
         }
+
+        public async Task<List<Notification>> GetNotificationsAsync()
+        {
+            await Init();
+            return await _database.Table<Notification>().OrderByDescending(n => n.Timestamp).ToListAsync();
+        }
+
+        public async Task SaveNotificationAsync(Notification note)
+        {
+            await Init();
+            if (note.Id != 0)
+                await _database.UpdateAsync(note);
+            else
+                await _database.InsertAsync(note);
+        }
+
+        public async Task MarkNotificationAsReadAsync(int id)
+        {
+            await Init();
+            var note = await _database.Table<Notification>().Where(n => n.Id == id).FirstOrDefaultAsync();
+            if (note != null)
+            {
+                note.IsRead = true;
+                await _database.UpdateAsync(note);
+            }
+        }
     }
 
-    // Helper class for the Insights query result
     public class CategoryTotal
     {
         public string Category { get; set; }

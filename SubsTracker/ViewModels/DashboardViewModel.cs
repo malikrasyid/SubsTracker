@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Plugin.LocalNotification;
 using SubsTracker.Models;
 using SubsTracker.Services;
 using System.Collections.ObjectModel;
@@ -74,6 +75,13 @@ namespace SubsTracker.ViewModels
     };
 
             await Shell.Current.GoToAsync(nameof(Views.SubscriptionDetailPage), navigationParameter);
+        }
+
+        [RelayCommand]
+        async Task GoToNotifications()
+        {
+            // Navigates to the NotificationPage defined in AppShell routes
+            await Shell.Current.GoToAsync(nameof(NotificationPage));
         }
     }
 }

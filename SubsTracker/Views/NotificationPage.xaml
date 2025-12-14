@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SubsTracker.ViewModels"
+             xmlns:model="clr-namespace:SubsTracker.Models"
+             x:Class="SubsTracker.Views.NotificationPage"
+             Title="Notifications"
+             BackgroundColor="#F5F5F5">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Clear" Command="{Binding ClearAllCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*, Auto" Padding="20">
+
+        <CollectionView Grid.Row="0" ItemsSource="{Binding Notifications}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Notification">
+                    <Frame Margin="0,5" Padding="15" CornerRadius="10" HasShadow="True" BorderColor="Transparent">
+                        <StackLayout>
+                            <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" TextColor="#333"/>
+                            <Label Text="{Binding Message}" FontSize="14" TextColor="#666" Margin="0,5,0,0"/>
+                            <Label Text="{Binding Timestamp, StringFormat='{0:MMM dd, HH:mm}'}" 
+                                   FontSize="12" TextColor="#999" HorizontalOptions="End"/>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                    <Label Text="No new notifications" TextColor="Gray" HorizontalTextAlignment="Center"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <Button Grid.Row="1" 
+                Text="Close" 
+                Command="{Binding GoBackCommand}" 
+                Margin="0,20,0,0"
+                BackgroundColor="#512BD4"
+                TextColor="White"/>
+    </Grid>
+</ContentPage>

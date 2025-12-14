@@ -5,78 +5,92 @@
              xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="SubsTracker.Views.InsightsPage"
              Title="Insights"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#121212}">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="15" Padding="20">
+    <Grid RowDefinitions="60, *">
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
-                <Frame Grid.Column="0" Padding="15" CornerRadius="15" HasShadow="True" BackgroundColor="{StaticResource Primary}">
-                    <StackLayout>
-                        <Label Text="Monthly" TextColor="#CCFFFFFF" FontSize="12"/>
-                        <Label Text="{Binding TotalMonthlyPrice, StringFormat='${0:F0}'}" TextColor="White" FontSize="28" FontAttributes="Bold"/>
-                    </StackLayout>
-                </Frame>
-                <Frame Grid.Column="1" Padding="15" CornerRadius="15" HasShadow="True" BackgroundColor="White">
-                    <StackLayout>
-                        <Label Text="Yearly Est." TextColor="Gray" FontSize="12"/>
-                        <Label Text="{Binding EstimatedYearlyPrice, StringFormat='${0:F0}'}" TextColor="Black" FontSize="28" FontAttributes="Bold"/>
-                    </StackLayout>
-                </Frame>
-            </Grid>
+        <Grid Grid.Row="0" Padding="15,0">
 
-            <Frame Padding="15" CornerRadius="15" HasShadow="True">
-                <VerticalStackLayout Spacing="20">
-                    <Label Text="Spending by Category" FontAttributes="Bold" />
+            <Label Text="Insights"
+           FontSize="18"
+           FontAttributes="Bold"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"
+           InputTransparent="True"
+           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
 
-                    <Grid>
-                        <micro:ChartView Chart="{Binding CategoryChart}" 
+        </Grid>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="15" Padding="20, 0, 20, 20">
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                    <Frame Grid.Column="0" Padding="15" CornerRadius="15" HasShadow="True" BackgroundColor="white">
+                        <StackLayout>
+                            <Label Text="Monthly" TextColor="Gray" FontSize="12"/>
+                            <Label Text="{Binding TotalMonthlyPrice, StringFormat='${0:F0}'}" TextColor="Black" FontSize="28" FontAttributes="Bold"/>
+                        </StackLayout>
+                    </Frame>
+                    <Frame Grid.Column="1" Padding="15" CornerRadius="15" HasShadow="True" BackgroundColor="White">
+                        <StackLayout>
+                            <Label Text="Yearly Est." TextColor="Gray" FontSize="12"/>
+                            <Label Text="{Binding EstimatedYearlyPrice, StringFormat='${0:F0}'}" TextColor="Black" FontSize="28" FontAttributes="Bold"/>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+
+                <Frame Padding="15" CornerRadius="15" HasShadow="True">
+                    <VerticalStackLayout Spacing="20">
+                        <Label Text="Spending by Category" FontAttributes="Bold" />
+
+                        <Grid>
+                            <micro:ChartView Chart="{Binding CategoryChart}" 
                      HeightRequest="260"
                      WidthRequest="260"
                      HorizontalOptions="Center"
                      VerticalOptions="Center">
-                            <micro:ChartView.Shadow>
-                                <Shadow Brush="Black" 
+                                <micro:ChartView.Shadow>
+                                    <Shadow Brush="Black" 
                     Offset="5,5" 
                     Radius="10" 
                     Opacity="0.2" />
-                            </micro:ChartView.Shadow>
+                                </micro:ChartView.Shadow>
 
-                        </micro:ChartView>
-                        <VerticalStackLayout HorizontalOptions="Center" 
+                            </micro:ChartView>
+                            <VerticalStackLayout HorizontalOptions="Center" 
                          VerticalOptions="Center"
                          InputTransparent="True">
 
-                            <Label Text="Total" 
+                                <Label Text="Total" 
                FontSize="10" 
                TextColor="Gray" 
                HorizontalOptions="Center"/>
 
-                            <Label Text="{Binding TotalMonthlyPrice, StringFormat='${0:F0}'}" 
+                                <Label Text="{Binding TotalMonthlyPrice, StringFormat='${0:F0}'}" 
                FontSize="20" 
                FontAttributes="Bold" 
                TextColor="{AppThemeBinding Light=Black, Dark=White}"
                HorizontalOptions="Center"/>
 
-                        </VerticalStackLayout>
-                    </Grid>
+                            </VerticalStackLayout>
+                        </Grid>
 
-                    <StackLayout BindableLayout.ItemsSource="{Binding LegendItems}"
+                        <StackLayout BindableLayout.ItemsSource="{Binding LegendItems}"
                                  Orientation="Vertical"
                                  Spacing="10">
 
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate>
-                                <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto" Margin="10, 5">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto" Margin="10, 5">
 
-                                    <BoxView Grid.Column="0" 
+                                        <BoxView Grid.Column="0" 
                                              Color="{Binding Color}" 
                                              HeightRequest="12" WidthRequest="12" 
                                              CornerRadius="3"
                                              VerticalOptions="Center" 
                                              Margin="0,0,5,0"/>
 
-                                    <Label Grid.Column="1" 
+                                        <Label Grid.Column="1" 
                                            Text="{Binding Name}" 
                                            FontSize="12" 
                                            FontAttributes="Bold" 
@@ -84,30 +98,31 @@
                                            VerticalOptions="Center"
                                            Margin="0,0,8,0"/>
 
-                                    <Label Grid.Column="2" 
+                                        <Label Grid.Column="2" 
                                            Text="{Binding Amount, StringFormat='${0}'}" 
                                            FontSize="14" 
                                            FontAttributes="Bold" 
                                            VerticalOptions="Center"
                                            HorizontalOptions="End"/>
-                                </Grid>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
 
-                    </StackLayout>
-                </VerticalStackLayout>
-            </Frame>
+                        </StackLayout>
+                    </VerticalStackLayout>
+                </Frame>
 
-            <Frame Padding="20" CornerRadius="15" HasShadow="True" BackgroundColor="{Binding SmartAdvice.HexColor}" BorderColor="Transparent">
-                <Grid ColumnDefinitions="50, *">
-                    <Label Grid.Column="0" Text="💡" FontSize="30" VerticalOptions="Center"/>
-                    <StackLayout Grid.Column="1">
-                        <Label Text="{Binding SmartAdvice.Title}" TextColor="{Binding SmartAdvice.TextColor}" FontAttributes="Bold" FontSize="14"/>
-                        <Label Text="{Binding SmartAdvice.Message}" TextColor="{Binding SmartAdvice.TextColor}" FontSize="12"/>
-                    </StackLayout>
-                </Grid>
-            </Frame>
+                <Frame Padding="20" CornerRadius="15" HasShadow="True" BackgroundColor="{Binding SmartAdvice.HexColor}" BorderColor="Transparent">
+                    <Grid ColumnDefinitions="50, *">
+                        <Label Grid.Column="0" Text="💡" FontSize="30" VerticalOptions="Center"/>
+                        <StackLayout Grid.Column="1">
+                            <Label Text="{Binding SmartAdvice.Title}" TextColor="{Binding SmartAdvice.TextColor}" FontAttributes="Bold" FontSize="14"/>
+                            <Label Text="{Binding SmartAdvice.Message}" TextColor="{Binding SmartAdvice.TextColor}" FontSize="12"/>
+                        </StackLayout>
+                    </Grid>
+                </Frame>
 
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>
