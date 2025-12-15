@@ -81,7 +81,7 @@ namespace SubsTracker.ViewModels
         async Task GoToNotifications()
         {
             // Navigates to the NotificationPage defined in AppShell routes
-            await Shell.Current.GoToAsync(nameof(NotificationPage));
+            await Shell.Current.GoToAsync(nameof(Views.NotificationPage));
         }
     }
 }

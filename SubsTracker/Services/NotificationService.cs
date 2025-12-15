@@ -1,5 +1,6 @@
 ﻿using SubsTracker.Models;
-using SubsTracker.Helpers; // To use SubscriptionHelper logic
+using SubsTracker.Helpers; 
+using Plugin.LocalNotification;
 
 namespace SubsTracker.Services
 {
@@ -14,10 +15,7 @@ namespace SubsTracker.Services
 
         public async Task<List<Notification>> GetNotificationsAsync()
         {
-            // 1. First, check if we need to generate new alerts
             await CheckAndGenerateNotifications();
-
-            // 2. Then return the list from DB
             return await _databaseService.GetNotificationsAsync();
         }
 
@@ -26,22 +24,17 @@ namespace SubsTracker.Services
             await _databaseService.MarkNotificationAsReadAsync(notification.Id);
         }
 
-        // --- THE LOGIC ENGINE ---
-        private async Task CheckAndGenerateNotifications()
+        public async Task CheckAndGenerateNotifications()
         {
             var subs = await _databaseService.GetSubscriptionsAsync();
             var existingNotifications = await _databaseService.GetNotificationsAsync();
 
             foreach (var sub in subs)
             {
-                // 1. Calculate days until due using your existing Helper
                 int daysDue = SubscriptionHelper.GetDaysUntilDue(sub.NextPaymentDate);
 
-                // 2. Logic: Notify if due in 3 days, 1 day, or Today (0 days)
                 if (daysDue <= 3 && daysDue >= 0)
                 {
-                    // 3. SPAM PREVENTION:
-                    // Check if we already created a notification for this subscription TODAY.
                     bool alreadyNotifiedToday = existingNotifications.Any(n => 
                         n.SubscriptionId == sub.Id && 
                         n.Timestamp.Date == DateTime.Today);
@@ -59,6 +52,20 @@ namespace SubsTracker.Services
                         };
 
                         await _databaseService.SaveNotificationAsync(newNote);
+
+                        var request = new NotificationRequest
+                        {
+                            NotificationId = newNote.Id, // Use the DB ID or a random int
+                            Title = newNote.Title,
+                            Description = newNote.Message,
+                            BadgeNumber = 1,
+                            Schedule = new NotificationRequestSchedule
+                            {
+                                NotifyTime = DateTime.Now.AddSeconds(1) // Fire immediately
+                            }
+                        };
+                        await LocalNotificationCenter.Current.Show(request);
+
                     }
                 }
             }

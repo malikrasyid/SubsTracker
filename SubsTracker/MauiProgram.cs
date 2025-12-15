@@ -15,7 +15,7 @@ namespace SubsTracker
             builder
                 .UseMauiApp<App>()
                 .UseMicrocharts()
-                //.UseLocalNotification()
+                .UseLocalNotification()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

@@ -5,15 +5,33 @@
              xmlns:model="clr-namespace:SubsTracker.Models"
              x:Class="SubsTracker.Views.NotificationPage"
              Title="Notifications"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="#F5F5F5">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Clear" Command="{Binding ClearAllCommand}" />
-    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="60, *">
 
-    <Grid RowDefinitions="*, Auto" Padding="20">
+        <Grid Grid.Row="0" Padding="15,0">
+            <ImageButton Source="back.png"
+                 Command="{Binding GoBackCommand}"
+                 HeightRequest="40" WidthRequest="40"
+                 Padding="6"
+                 HorizontalOptions="Start" VerticalOptions="Center"
+                 BackgroundColor="Transparent"/>
 
-        <CollectionView Grid.Row="0" ItemsSource="{Binding Notifications}">
+            <Label Text="Notifications"
+               FontSize="18" FontAttributes="Bold"
+               HorizontalOptions="Center" VerticalOptions="Center"
+               InputTransparent="True"
+               TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+
+            <Button Text="Clear"
+                    Command="{Binding ClearAllCommand}"
+                    TextColor="Red"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="End" VerticalOptions="Center"/>
+        </Grid>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Notifications}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Notification">
                     <Frame Margin="0,5" Padding="15" CornerRadius="10" HasShadow="True" BorderColor="Transparent">
@@ -32,12 +50,5 @@
                 </StackLayout>
             </CollectionView.EmptyView>
         </CollectionView>
-
-        <Button Grid.Row="1" 
-                Text="Close" 
-                Command="{Binding GoBackCommand}" 
-                Margin="0,20,0,0"
-                BackgroundColor="#512BD4"
-                TextColor="White"/>
     </Grid>
 </ContentPage>

@@ -111,7 +111,7 @@
 
                 </CollectionView>
             </RefreshView>
-
+           
             <ImageButton Source ="plus.png"
                 Command="{Binding GoToAddSubscriptionCommand}"
                 BackgroundColor="{StaticResource Primary}"

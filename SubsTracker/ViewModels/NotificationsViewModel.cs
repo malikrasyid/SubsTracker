@@ -30,10 +30,10 @@ namespace SubsTracker.ViewModels
             {
                 IsBusy = true;
 
-                // 1. Get data from Service (which generates new alerts if needed)
+                await _notificationService.CheckAndGenerateNotifications();
+
                 var notifs = await _notificationService.GetNotificationsAsync();
 
-                // 2. Refresh the UI list
                 if (Notifications.Count > 0) Notifications.Clear();
 
                 foreach (var note in notifs)
